@@ -1,20 +1,43 @@
+'use client';
+
 import Image from 'next/image';
-import { Calendar, Clock, MapPin } from 'lucide-react';
+import Link from 'next/link';
+import { Calendar, Clock, MapPin, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { mockEvents } from '@/lib/data';
+import { mockEvents, mockUsers } from '@/lib/data';
+import { useEffect, useState } from 'react';
+import type { User } from '@/lib/types';
 
 export default function EventsPage() {
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    // In a real app, this would be fetched from auth context
+    const user = mockUsers.find(u => u.roles.isAdmin) || mockUsers[0];
+    setLoggedInUser(user);
+  }, []);
+
   const upcomingEvents = mockEvents.filter(event => event.date >= new Date()).sort((a,b) => a.date.getTime() - b.date.getTime());
   const pastEvents = mockEvents.filter(event => event.date < new Date()).sort((a,b) => b.date.getTime() - a.date.getTime());
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold font-headline">Community Events</h1>
-        <p className="text-muted-foreground">Stay up-to-date with our community's happenings.</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold font-headline">Community Events</h1>
+          <p className="text-muted-foreground">Stay up-to-date with our community's happenings.</p>
+        </div>
+        {loggedInUser?.roles.isAdmin && (
+            <Button asChild>
+                <Link href="/events/new">
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create Event
+                </Link>
+            </Button>
+        )}
       </div>
 
       <section>
