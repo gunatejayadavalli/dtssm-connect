@@ -12,13 +12,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { DateTimePicker } from '@/components/date-time-picker';
 
 const eventSchema = z.object({
   title: z.string().min(3, "Title is required"),
-  dateFrom: z.string().nonempty("Start date is required"),
-  dateTo: z.string().nonempty("End date is required"),
-  timeFrom: z.string().optional(),
-  timeTo: z.string().optional(),
+  dateFrom: z.date({ required_error: 'Start date is required' }),
+  dateTo: z.date({ required_error: 'End date is required' }),
   venue: z.string().min(3, "Venue is required"),
   description: z.string().max(1000, "Description is too long").optional(),
 });
@@ -30,10 +29,6 @@ export default function NewEventPage() {
     resolver: zodResolver(eventSchema),
     defaultValues: {
         title: '',
-        dateFrom: '',
-        dateTo: '',
-        timeFrom: '',
-        timeTo: '',
         venue: '',
         description: '',
     },
@@ -72,20 +67,28 @@ export default function NewEventPage() {
                 <FormItem><FormLabel>Event Title</FormLabel><FormControl><Input placeholder="e.g., Annual Community Picnic" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
               <div className="grid sm:grid-cols-2 gap-4">
-                <FormField control={form.control} name="dateFrom" render={({ field }) => (
-                  <FormItem><FormLabel>Date From</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>
-                )} />
-                <FormField control={form.control} name="dateTo" render={({ field }) => (
-                  <FormItem><FormLabel>Date To</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>
-                )} />
-              </div>
-               <div className="grid sm:grid-cols-2 gap-4">
-                <FormField control={form.control} name="timeFrom" render={({ field }) => (
-                  <FormItem><FormLabel>Time From (Optional)</FormLabel><FormControl><Input type="text" placeholder="e.g., 11:00 AM" {...field} /></FormControl><FormMessage /></FormItem>
-                )} />
-                <FormField control={form.control} name="timeTo" render={({ field }) => (
-                  <FormItem><FormLabel>Time To (Optional)</FormLabel><FormControl><Input type="text" placeholder="e.g., 4:00 PM" {...field} /></FormControl><FormMessage /></FormItem>
-                )} />
+                <FormField
+                  control={form.control}
+                  name="dateFrom"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Date From</FormLabel>
+                      <DateTimePicker date={field.value} setDate={field.onChange} />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dateTo"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Date To</FormLabel>
+                      <DateTimePicker date={field.value} setDate={field.onChange} />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
             </CardContent>
           </Card>

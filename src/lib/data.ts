@@ -133,10 +133,8 @@ export const mockEvents: CommunityEvent[] = [
     {
         id: 'evt_1',
         title: 'Annual Community Picnic',
-        dateFrom: new Date('2024-09-15'),
-        dateTo: new Date('2024-09-15'),
-        timeFrom: '11:00 AM',
-        timeTo: '4:00 PM',
+        dateFrom: new Date('2024-09-15T11:00:00'),
+        dateTo: new Date('2024-09-15T16:00:00'),
         venue: 'Indira Park, Hyderabad',
         description: 'Join us for a day of fun, food, and games at the annual community picnic. All families are welcome. Please bring a dish to share.',
         imageUrl: 'https://picsum.photos/seed/event1/800/400'
@@ -144,9 +142,8 @@ export const mockEvents: CommunityEvent[] = [
     {
         id: 'evt_2',
         title: 'Ugadi Celebrations 2024',
-        dateFrom: new Date('2024-04-09'),
-        dateTo: new Date('2024-04-09'),
-        timeFrom: '6:00 PM',
+        dateFrom: new Date('2024-04-09T18:00:00'),
+        dateTo: new Date('2024-04-09T18:00:00'),
         venue: 'Community Hall, Main Street',
         description: 'Celebrate the Telugu New Year with traditional festivities, cultural programs, and a special Ugadi Pachadi feast.',
         imageUrl: 'https://picsum.photos/seed/event2/800/400'
@@ -154,10 +151,8 @@ export const mockEvents: CommunityEvent[] = [
     {
         id: 'evt_3',
         title: 'Charity Blood Donation Camp',
-        dateFrom: new Date('2024-10-02'),
-        dateTo: new Date('2024-10-02'),
-        timeFrom: '9:00 AM',
-        timeTo: '5:00 PM',
+        dateFrom: new Date('2024-10-02T09:00:00'),
+        dateTo: new Date('2024-10-02T17:00:00'),
         venue: 'Red Cross Building, Downtown',
         description: 'Give the gift of life. Our community is organizing a blood donation camp. Your participation can save lives.',
         imageUrl: 'https://picsum.photos/seed/event3/800/400'

@@ -24,18 +24,21 @@ export default function EventsPage() {
   const pastEvents = mockEvents.filter(event => event.dateFrom < new Date()).sort((a,b) => b.dateFrom.getTime() - a.dateFrom.getTime());
 
   const formatDateRange = (from: Date, to: Date) => {
-    const fromStr = format(from, 'MMMM d, yyyy');
-    const toStr = format(to, 'MMMM d, yyyy');
+    const fromStr = format(from, 'PPP');
+    const toStr = format(to, 'PPP');
     if (fromStr === toStr) {
         return fromStr;
     }
     return `${fromStr} to ${toStr}`;
   }
   
-  const formatTimeRange = (from?: string, to?: string) => {
-    if (from && to) return `${from} to ${to}`;
-    if (from) return `Starts at ${from}`;
-    if (to) return `Ends at ${to}`;
+  const formatTimeRange = (from?: Date, to?: Date) => {
+    const fromTime = from && (from.getHours() !== 0 || from.getMinutes() !== 0) ? format(from, 'p') : null;
+    const toTime = to && (to.getHours() !== 0 || to.getMinutes() !== 0) ? format(to, 'p') : null;
+
+    if (fromTime && toTime) return `${fromTime} to ${toTime}`;
+    if (fromTime) return `Starts at ${fromTime}`;
+    if (toTime) return `Ends at ${toTime}`;
     return null;
   }
 
@@ -61,7 +64,7 @@ export default function EventsPage() {
         {upcomingEvents.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
             {upcomingEvents.map((event) => {
-              const timeDisplay = formatTimeRange(event.timeFrom, event.timeTo);
+              const timeDisplay = formatTimeRange(event.dateFrom, event.dateTo);
               return (
                 <Card key={event.id} className="flex flex-col">
                   {event.imageUrl && (
