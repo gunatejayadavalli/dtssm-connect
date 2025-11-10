@@ -1,3 +1,22 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "logo",
+      "description": "The main logo for the DTSSM Connect application.",
+      "imageUrl": "https://images.unsplash.com/photo-1762340272058-cf69cad78602?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y29tbXVuaXR5JTIwbG9nb3xlbnwwfHx8fDE3NjI3NDQ2NDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "community logo"
+    },
+    {
+      "id": "awaiting-approval",
+      "description": "Illustration for the awaiting approval page.",
+      "imageUrl": "https://images.unsplash.com/photo-1758928807855-beedbddad338?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3YWl0aW5nJTIwZG9jdW1lbnR8ZW58MHx8fHwxNzYyNzU2MTMyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "waiting document"
+    },
+    {
+      "id": "profile-review",
+      "description": "Banner image for the quarterly profile review reminder.",
+      "imageUrl": "https://images.unsplash.com/photo-1606327054476-256fc9690fe2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjYWxlbmRhciUyMGNoZWNrbGlzdHxlbnwwfHx8fDE3NjI3MDMzMzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "calendar checklist"
+    }
+  ]
 }
