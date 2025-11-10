@@ -66,11 +66,19 @@ export default function RegisterPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
+      dob: '',
+      gender: undefined,
       phone: '',
       fatherName: '',
+      motherName: '',
       presentAddress: '',
+      permanentAddress: '',
       city: '',
       profession: '',
+      company: '',
+      maritalStatus: undefined,
+      spouseDetails: '',
+      childrenDetails: '',
     },
   });
 
