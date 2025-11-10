@@ -11,8 +11,9 @@ import {
   Briefcase,
   HeartHandshake,
   ChevronLeft,
+  Link2,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
@@ -39,12 +40,16 @@ import {
 } from '@/components/ui/accordion';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { mockUsers } from '@/lib/data';
+import type { User } from '@/lib/types';
+
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   dob: z.string().min(1, 'Date of Birth is required'),
   gender: z.enum(['Male', 'Female', 'Other'], { required_error: 'Gender is required' }),
   phone: z.string().min(10, 'Phone number must be 10 digits').max(10, 'Phone number must be 10 digits'),
+  relationToMember: z.string().min(1, 'Relation is required'),
   fatherName: z.string().optional(),
   motherName: z.string().optional(),
   presentAddress: z.string().optional(),
@@ -63,6 +68,13 @@ export default function NewMemberPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [openAccordions, setOpenAccordions] = useState<string[]>(['basic-info']);
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    // In a real app, you'd fetch the logged-in user's data
+    const user = mockUsers.find(u => u.roles.isAdmin) || mockUsers[0];
+    setLoggedInUser(user);
+  }, []);
   
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
@@ -73,6 +85,7 @@ export default function NewMemberPage() {
       phone: '',
       city: '',
       maritalStatus: undefined,
+      relationToMember: '',
     },
   });
 
@@ -81,7 +94,7 @@ export default function NewMemberPage() {
   const showFamilyDetails = maritalStatus && ['Married', 'Widowed', 'Divorced'].includes(maritalStatus);
 
   const accordionFields: Record<string, (keyof FormSchemaType)[]> = {
-    'basic-info': ['name', 'dob', 'gender', 'phone'],
+    'basic-info': ['name', 'dob', 'gender', 'phone', 'relationToMember'],
     'address-info': ['city'],
     'marital-info': ['maritalStatus'],
   };
@@ -96,7 +109,10 @@ export default function NewMemberPage() {
   };
 
   function onSubmit(values: FormSchemaType) {
-    console.log(values);
+    console.log({
+      ...values,
+      registeredBy: loggedInUser?.id
+    });
     toast({
         title: "Member Profile Created",
         description: `The profile for ${values.name} has been submitted for approval.`,
@@ -130,6 +146,22 @@ export default function NewMemberPage() {
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="p-4 space-y-4">
+                  <FormItem>
+                    <FormLabel>Registering on behalf of</FormLabel>
+                    <Input disabled value={loggedInUser?.name || 'Loading...'} />
+                  </FormItem>
+                  <FormField control={form.control} name="relationToMember" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className={errors.relationToMember ? 'text-destructive' : ''}>
+                        <div className="flex items-center gap-1">
+                          <Link2 className="h-4 w-4" />
+                          Your Relation to the Member *
+                        </div>
+                      </FormLabel>
+                      <FormControl><Input placeholder="e.g., Father, Brother, Friend" {...field} /></FormControl>
+                    </FormItem>
+                  )} />
+                  <hr />
                   <FormField control={form.control} name="name" render={({ field }) => (
                     <FormItem>
                       <FormLabel className={errors.name ? 'text-destructive' : ''}>Full Name *</FormLabel>
