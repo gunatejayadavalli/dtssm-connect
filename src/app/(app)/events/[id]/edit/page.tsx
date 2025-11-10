@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { notFound, useRouter } from 'next/navigation';
+import { notFound, useRouter, useParams } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -24,7 +24,8 @@ const eventSchema = z.object({
   description: z.string().max(1000, "Description is too long").optional(),
 });
 
-export default function EditEventPage({ params }: { params: { id: string } }) {
+export default function EditEventPage() {
+  const params = useParams<{ id: string }>();
   const { toast } = useToast();
   const router = useRouter();
   const event = mockEvents.find(e => e.id === params.id);
