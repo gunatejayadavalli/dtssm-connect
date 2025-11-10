@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { User as UserIcon, Building, MapPin, Phone, HeartHandshake, Users, Edit } from 'lucide-react';
+import { User as UserIcon, Building, MapPin, Phone, HeartHandshake, Users, Edit, Baby } from 'lucide-react';
 import { format } from 'date-fns';
 import { getMemberById } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -54,7 +54,7 @@ export default function ProfilePage() {
       </Card>
       
       <Card>
-        <CardHeader><CardTitle>Personal Details</CardTitle></CardHeader>
+        <CardHeader><CardTitle>Personal & Family Details</CardTitle></CardHeader>
         <CardContent className="space-y-4">
             <dl className="space-y-4">
               <DetailItem icon={Phone} label="Phone" value={user.phone} />
@@ -63,6 +63,7 @@ export default function ProfilePage() {
               <DetailItem icon={Users} label="Father's Name" value={user.fatherName} />
               <DetailItem icon={Users} label="Mother's Name" value={user.motherName} />
               {user.maritalStatus === "Married" && <DetailItem icon={Users} label="Spouse Details" value={user.spouseDetails || "Not provided"} />}
+              {user.childrenDetails && <DetailItem icon={Baby} label="Children Details" value={user.childrenDetails} />}
             </dl>
         </CardContent>
       </Card>

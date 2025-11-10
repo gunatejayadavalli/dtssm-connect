@@ -11,7 +11,8 @@ import {
   Briefcase,
   HeartHandshake,
   ShieldCheck,
-  ChevronLeft
+  ChevronLeft,
+  Baby
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -41,6 +42,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -56,6 +58,7 @@ const formSchema = z.object({
   company: z.string().optional(),
   maritalStatus: z.enum(['Single', 'Married', 'Widowed', 'Divorced']),
   spouseDetails: z.string().optional(),
+  childrenDetails: z.string().optional(),
 });
 
 export default function RegisterPage() {
@@ -72,6 +75,7 @@ export default function RegisterPage() {
   });
 
   const maritalStatus = form.watch('maritalStatus');
+  const showFamilyDetails = maritalStatus && ['Married', 'Widowed', 'Divorced'].includes(maritalStatus);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
@@ -81,11 +85,11 @@ export default function RegisterPage() {
   
   const privacyFields = [
       { name: 'presentAddress', label: 'Present Address' },
-      { name: 'permanentAddress', label: 'Permanent Address' },
+      { name: 'spouseDetails', label: 'Spouse Details' },
+      { name: 'childrenDetails', label: 'Children Details'},
+      { name: 'phone', label: 'Phone Number' },
       { name: 'profession', label: 'Profession' },
       { name: 'company', label: 'Company / Organization' },
-      { name: 'spouseDetails', label: 'Spouse Details' },
-      { name: 'phone', label: 'Phone Number' },
   ]
 
   return (
@@ -234,7 +238,7 @@ export default function RegisterPage() {
               <AccordionItem value="marital-info">
                  <AccordionTrigger>
                   <div className="flex items-center gap-3">
-                    <HeartHandshake className="h-5 w-5 text-primary" /> Marital Status
+                    <HeartHandshake className="h-5 w-5 text-primary" /> Marital Status & Family
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="p-4 space-y-4">
@@ -262,6 +266,24 @@ export default function RegisterPage() {
                       </FormItem>
                     )} />
                   )}
+                  {showFamilyDetails && (
+                    <FormField
+                      control={form.control}
+                      name="childrenDetails"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Children Details</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Please provide names and ages of your children."
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
                 </AccordionContent>
               </AccordionItem>
 
@@ -272,9 +294,12 @@ export default function RegisterPage() {
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="p-4 space-y-4">
-                  <p className="text-sm text-muted-foreground mb-4">Control who can see your information. 'Consent-based' means others must request to see it. Fields not listed here are public.</p>
+                  <p className="text-sm text-muted-foreground mb-4">Control who can see your information. 'Consent-based' means others must request to see it. Fields not listed here are public by default.</p>
                   {privacyFields.map(field => {
                     if (field.name === 'spouseDetails' && maritalStatus !== 'Married') {
+                        return null;
+                    }
+                    if (field.name === 'childrenDetails' && !showFamilyDetails) {
                         return null;
                     }
                     return (

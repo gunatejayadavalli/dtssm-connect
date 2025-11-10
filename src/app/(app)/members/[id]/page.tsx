@@ -10,7 +10,8 @@ import {
   MessageCircle,
   Users,
   HeartHandshake,
-  ChevronLeft
+  ChevronLeft,
+  Baby
 } from 'lucide-react';
 import { getMemberById } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -109,6 +110,7 @@ export default function MemberDetailPage({ params }: { params: { id: string } })
             <DetailItem icon={Users} label="Father's Name" value={user.fatherName} isPrivate={user.visibility?.fatherName !== 'public'}/>
             <DetailItem icon={Users} label="Mother's Name" value={user.motherName} isPrivate />
             {user.maritalStatus === "Married" && <DetailItem icon={Users} label="Spouse Details" value={user.spouseDetails || "Details are private"} isPrivate />}
+            {user.childrenDetails && <DetailItem icon={Baby} label="Children Details" value={user.childrenDetails} isPrivate />}
           </CardContent>
         </Card>
       </div>

@@ -14,6 +14,7 @@ export type User = {
   company?: string;
   maritalStatus: 'Single' | 'Married' | 'Widowed' | 'Divorced';
   spouseDetails?: string;
+  childrenDetails?: string;
   phone: string;
   profilePhotoUrl?: string;
   isApproved: boolean;
