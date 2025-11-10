@@ -100,7 +100,7 @@ export default function HomePage() {
         {quickNavItems.map(item => (
           <Card
             key={item.title}
-            className="hover:shadow-lg transition-shadow group flex flex-col"
+            className="hover:shadow-lg transition-shadow group flex flex-col bg-card"
           >
             <CardHeader className="flex-shrink-0">
               <div className="flex justify-between items-start">
