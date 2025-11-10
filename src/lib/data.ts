@@ -133,8 +133,8 @@ export let mockEvents: CommunityEvent[] = [
     {
         id: 'evt_1',
         title: 'Annual Community Picnic',
-        dateFrom: new Date('2024-09-15T11:00:00'),
-        dateTo: new Date('2024-09-15T16:00:00'),
+        dateFrom: new Date(new Date().getFullYear() + 1, 8, 15, 11, 0),
+        dateTo: new Date(new Date().getFullYear() + 1, 8, 15, 16, 0),
         venue: 'Indira Park, Hyderabad',
         description: 'Join us for a day of fun, food, and games at the annual community picnic. All families are welcome. Please bring a dish to share.',
     },
@@ -149,10 +149,18 @@ export let mockEvents: CommunityEvent[] = [
     {
         id: 'evt_3',
         title: 'Charity Blood Donation Camp',
-        dateFrom: new Date('2024-10-02T09:00:00'),
-        dateTo: new Date('2024-10-02T17:00:00'),
+        dateFrom: new Date(new Date().getFullYear() + 1, 9, 2, 9, 0),
+        dateTo: new Date(new Date().getFullYear() + 1, 9, 2, 17, 0),
         venue: 'Red Cross Building, Downtown',
         description: 'Give the gift of life. Our community is organizing a blood donation camp. Your participation can save lives.',
+    },
+    {
+        id: 'evt_4',
+        title: 'Diwali Celebration',
+        dateFrom: new Date(new Date().getFullYear() + 1, 10, 1, 18, 30),
+        dateTo: new Date(new Date().getFullYear() + 1, 10, 1, 21, 30),
+        venue: 'Open Grounds, Near Lake',
+        description: 'Let\'s celebrate the festival of lights together with fireworks, sweets, and cultural performances.',
     }
 ]
 
