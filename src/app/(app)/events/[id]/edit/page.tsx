@@ -85,7 +85,11 @@ export default function EditEventPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <FormField control={form.control} name="title" render={({ field }) => (
-                <FormItem><FormLabel>Event Title</FormLabel><FormControl><Input placeholder="e.g., Annual Community Picnic" {...field} /></FormControl><FormMessage /></FormItem>
+                <FormItem>
+                  <FormLabel>Event Title *</FormLabel>
+                  <FormControl><Input placeholder="e.g., Annual Community Picnic" {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
               )} />
               <div className="grid sm:grid-cols-2 gap-4">
                 <FormField
@@ -93,7 +97,7 @@ export default function EditEventPage() {
                   name="dateFrom"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Date From</FormLabel>
+                      <FormLabel>Date From *</FormLabel>
                       <DateTimePicker date={field.value} setDate={field.onChange} />
                       <FormMessage />
                     </FormItem>
@@ -118,7 +122,11 @@ export default function EditEventPage() {
             <CardHeader><CardTitle className="flex items-center gap-2"><MapPin className="h-5 w-5 text-primary" /> Location</CardTitle></CardHeader>
             <CardContent>
               <FormField control={form.control} name="venue" render={({ field }) => (
-                <FormItem><FormLabel>Venue / Location</FormLabel><FormControl><Input placeholder="e.g., Indira Park, Hyderabad" {...field} /></FormControl><FormMessage /></FormItem>
+                <FormItem>
+                  <FormLabel>Venue / Location *</FormLabel>
+                  <FormControl><Input placeholder="e.g., Indira Park, Hyderabad" {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
               )} />
             </CardContent>
           </Card>
@@ -127,7 +135,11 @@ export default function EditEventPage() {
             <CardHeader><CardTitle className="flex items-center gap-2"><Info className="h-5 w-5 text-primary" /> Description</CardTitle></CardHeader>
             <CardContent>
               <FormField control={form.control} name="description" render={({ field }) => (
-                <FormItem><FormLabel>Event Description</FormLabel><FormControl><Textarea placeholder="Provide a brief description of the event..." className="min-h-[120px]" {...field} /></FormControl><FormMessage /></FormItem>
+                <FormItem>
+                  <FormLabel>Event Description</FormLabel>
+                  <FormControl><Textarea placeholder="Provide a brief description of the event..." className="min-h-[120px]" {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
               )} />
             </CardContent>
           </Card>
