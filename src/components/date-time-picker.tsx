@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/popover';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
+import { Switch } from './ui/switch';
 
 interface DateTimePickerProps {
   date: Date | undefined;
@@ -23,10 +24,17 @@ interface DateTimePickerProps {
 export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
   const [isTimePickerOpen, setIsTimePickerOpen] = React.useState(false);
 
+  const hasTime = date ? date.getHours() !== 0 || date.getMinutes() !== 0 : false;
+  const [timeEnabled, setTimeEnabled] = React.useState(hasTime);
+
+  React.useEffect(() => {
+     const newHasTime = date ? date.getHours() !== 0 || date.getMinutes() !== 0 : false;
+     setTimeEnabled(newHasTime);
+  }, [date])
+
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     if (!value) {
-      // If time is cleared, just keep the date part
       if (date) {
         const newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
         setDate(newDate);
@@ -45,7 +53,7 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
         setDate(undefined);
         return;
     };
-    if (date) {
+    if (date && timeEnabled) {
         const hours = date.getHours();
         const minutes = date.getMinutes();
         const newDate = setMinutes(setHours(selectedDate, hours), minutes);
@@ -55,7 +63,20 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
     }
   }
 
-  const timeValue = date ? format(date, 'HH:mm') : '';
+  const handleTimeToggle = (checked: boolean) => {
+    setTimeEnabled(checked);
+    if (!checked && date) {
+        // Reset time to midnight if toggled off
+        const newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
+        setDate(newDate);
+    } else if (checked && date) {
+        // Set a default time if toggled on and date exists, e.g., 9:00 AM
+        const newDateWithTime = setMinutes(setHours(date, 9), 0);
+        setDate(newDateWithTime);
+    }
+  }
+
+  const timeValue = date && timeEnabled ? format(date, 'HH:mm') : '';
   const dateHasTime = date && (date.getHours() !== 0 || date.getMinutes() !== 0);
 
   return (
@@ -81,13 +102,18 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
         />
         <div className="p-3 border-t border-border">
             <div className="space-y-2">
-                <Label htmlFor="time" className="text-sm">Time (Optional)</Label>
-                <Input
-                    id="time"
-                    type="time"
-                    value={timeValue}
-                    onChange={handleTimeChange}
-                />
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="time-toggle" className="text-sm">Add Time</Label>
+                  <Switch id="time-toggle" checked={timeEnabled} onCheckedChange={handleTimeToggle} />
+                </div>
+                {timeEnabled && (
+                    <Input
+                        id="time"
+                        type="time"
+                        value={timeValue}
+                        onChange={handleTimeChange}
+                    />
+                )}
             </div>
         </div>
       </PopoverContent>
