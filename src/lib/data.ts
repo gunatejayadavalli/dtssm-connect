@@ -149,8 +149,8 @@ export let mockEvents: CommunityEvent[] = [
     {
         id: 'evt_3',
         title: 'Charity Blood Donation Camp',
-        dateFrom: new Date(new Date().getFullYear() + 1, 9, 2, 9, 0),
-        dateTo: new Date(new Date().getFullYear() + 1, 9, 2, 17, 0),
+        dateFrom: new Date(2025, 10, 12, 9, 0),
+        dateTo: new Date(2025, 10, 20, 13, 0),
         venue: 'Red Cross Building, Downtown',
         description: 'Give the gift of life. Our community is organizing a blood donation camp. Your participation can save lives.',
     },
