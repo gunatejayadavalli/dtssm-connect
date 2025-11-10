@@ -15,7 +15,6 @@ import {
   Calendar as CalendarIcon,
   Scaling,
   Info,
-  Edit
 } from 'lucide-react';
 import { differenceInYears } from 'date-fns';
 
@@ -150,8 +149,7 @@ export default function BiodataDetailPage({ params }: { params: { id: string } }
       </div>
        <Card className="bg-secondary/50">
         <CardContent className="p-4 text-center">
-            <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
-                <Edit className="h-4 w-4" />
+            <p className="text-sm text-muted-foreground">
                 {owner ? (
                      <>
                      Biodata submitted by <Link href={`/members/${owner.id}`} className="font-medium text-primary hover:underline">{owner.name}</Link>.
