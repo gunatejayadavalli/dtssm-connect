@@ -14,10 +14,10 @@ import { cn } from '@/lib/utils';
 
 
 const MemberCard = ({ user }: { user: User }) => (
-  <Card className={cn("transition-colors hover:shadow-lg", user.roles.isAdmin ? "border-primary" : "hover:border-primary/50")}>
-    <Link href={`/members/${user.id}`} className="block h-full">
-        <CardContent className="p-4 flex items-center gap-4">
-            <Avatar className="h-16 w-16">
+  <Card className={cn("transition-colors hover:shadow-lg flex flex-col", user.roles.isAdmin ? "border-primary" : "hover:border-primary/50")}>
+    <Link href={`/members/${user.id}`} className="block h-full flex flex-col">
+        <CardContent className="p-4 flex items-center gap-4 flex-1">
+            <Avatar className="h-16 w-16 flex-shrink-0">
                 <AvatarImage src={user.profilePhotoUrl} alt={user.name} data-ai-hint="profile avatar" />
                 <AvatarFallback>{user.name.slice(0, 2).toUpperCase()}</AvatarFallback>
             </Avatar>
