@@ -13,6 +13,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { DateTimePicker } from '@/components/date-time-picker';
+import { addMockEvent, mockUsers } from '@/lib/data';
+import { useEffect, useState } from 'react';
+import { User } from '@/lib/types';
 
 const eventSchema = z.object({
   title: z.string().min(3, "Title is required"),
@@ -25,6 +28,14 @@ const eventSchema = z.object({
 export default function NewEventPage() {
   const { toast } = useToast();
   const router = useRouter();
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    // In a real app, this would be fetched from auth context
+    const user = mockUsers.find(u => u.roles.isAdmin) || mockUsers[0];
+    setLoggedInUser(user);
+  }, []);
+
   const form = useForm<z.infer<typeof eventSchema>>({
     resolver: zodResolver(eventSchema),
     defaultValues: {
@@ -35,7 +46,12 @@ export default function NewEventPage() {
   });
 
   function onSubmit(values: z.infer<typeof eventSchema>) {
-    console.log(values);
+    addMockEvent({
+        ...values,
+        createdBy: loggedInUser?.id,
+        isPublished: true,
+        imageUrl: `https://picsum.photos/seed/event${Date.now()}/800/400`
+    });
     toast({
         title: "Event Created",
         description: "The new event has been successfully created.",

@@ -159,5 +159,13 @@ export const mockEvents: CommunityEvent[] = [
     }
 ]
 
+export const addMockEvent = (event: Omit<CommunityEvent, 'id'>) => {
+    const newEvent: CommunityEvent = {
+        ...event,
+        id: `evt_${Date.now()}`
+    };
+    mockEvents.push(newEvent);
+};
+
 export const getMemberById = (id: string) => mockUsers.find(u => u.id === id);
 export const getBiodataById = (id: string) => mockBiodata.find(b => b.id === id);
