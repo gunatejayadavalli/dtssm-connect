@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   ChevronLeft,
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -42,24 +43,28 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
 const formSchema = z.object({
-  name: z.string().min(1),
-  dob: z.string().min(1),
-  gender: z.enum(['Male', 'Female', 'Other']),
-  phone: z.string().min(1),
+  name: z.string().min(1, 'Name is required'),
+  dob: z.string().min(1, 'Date of Birth is required'),
+  gender: z.enum(['Male', 'Female', 'Other'], { required_error: 'Gender is required' }),
+  phone: z.string().min(1, 'Phone number is required'),
   fatherName: z.string().optional(),
   motherName: z.string().optional(),
   presentAddress: z.string().optional(),
   permanentAddress: z.string().optional(),
-  city: z.string().min(1),
+  city: z.string().min(1, 'City is required'),
   profession: z.string().optional(),
   company: z.string().optional(),
-  maritalStatus: z.enum(['Single', 'Married', 'Widowed', 'Divorced']),
+  maritalStatus: z.enum(['Single', 'Married', 'Widowed', 'Divorced'], { required_error: 'Marital status is required' }),
   spouseDetails: z.string().optional(),
   childrenDetails: z.string().optional(),
 });
 
+type FormSchemaType = z.infer<typeof formSchema>;
+
 export default function RegisterPage() {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const [openAccordions, setOpenAccordions] = useState<string[]>(['basic-info']);
+  
+  const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
@@ -79,7 +84,7 @@ export default function RegisterPage() {
     },
   });
 
-  const { watch } = form;
+  const { watch, formState: { errors } } = form;
   const maritalStatus = watch('maritalStatus');
   const phoneValue = watch('phone');
   const presentAddressValue = watch('presentAddress');
@@ -91,7 +96,22 @@ export default function RegisterPage() {
   
   const showFamilyDetails = maritalStatus && ['Married', 'Widowed', 'Divorced'].includes(maritalStatus);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const accordionFields: Record<string, (keyof FormSchemaType)[]> = {
+    'basic-info': ['name', 'dob', 'gender', 'phone'],
+    'address-info': ['city'],
+    'marital-info': ['maritalStatus'],
+  };
+
+  const onInvalid = (errors: any) => {
+    const errorSections = Object.keys(accordionFields).filter(section => 
+      accordionFields[section].some(field => errors[field])
+    );
+    if (errorSections.length > 0) {
+      setOpenAccordions(Array.from(new Set([...openAccordions, ...errorSections])));
+    }
+  };
+
+  function onSubmit(values: FormSchemaType) {
     console.log(values);
     // On success, redirect to awaiting approval
     window.location.href = '/awaiting-approval';
@@ -124,8 +144,8 @@ export default function RegisterPage() {
         </div>
         
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <Accordion type="multiple" defaultValue={['basic-info']} className="w-full">
+          <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-8">
+            <Accordion type="multiple" value={openAccordions} onValueChange={setOpenAccordions} className="w-full">
               <AccordionItem value="basic-info">
                 <AccordionTrigger>
                   <div className="flex items-center gap-3">
@@ -135,19 +155,19 @@ export default function RegisterPage() {
                 <AccordionContent className="p-4 space-y-4">
                   <FormField control={form.control} name="name" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full Name *</FormLabel>
+                      <FormLabel className={errors.name ? 'text-destructive' : ''}>Full Name *</FormLabel>
                       <FormControl><Input placeholder="Your full name" {...field} /></FormControl>
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="dob" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Date of Birth *</FormLabel>
+                      <FormLabel className={errors.dob ? 'text-destructive' : ''}>Date of Birth *</FormLabel>
                       <FormControl><Input type="date" {...field} /></FormControl>
                     </FormItem>
                   )} />
                    <FormField control={form.control} name="gender" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Gender *</FormLabel>
+                      <FormLabel className={errors.gender ? 'text-destructive' : ''}>Gender *</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue placeholder="Select your gender" /></SelectTrigger></FormControl>
                         <SelectContent>
@@ -160,7 +180,7 @@ export default function RegisterPage() {
                   )} />
                   <FormField control={form.control} name="phone" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone Number (for login) *</FormLabel>
+                      <FormLabel className={errors.phone ? 'text-destructive' : ''}>Phone Number (for login) *</FormLabel>
                       <FormControl><Input type="tel" placeholder="Your 10-digit mobile number" {...field} /></FormControl>
                     </FormItem>
                   )} />
@@ -210,7 +230,7 @@ export default function RegisterPage() {
                   )} />
                   <FormField control={form.control} name="city" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>City / Place *</FormLabel>
+                      <FormLabel className={errors.city ? 'text-destructive' : ''}>City / Place *</FormLabel>
                       <FormControl><Input placeholder="e.g., Hyderabad" {...field} /></FormControl>
                     </FormItem>
                   )} />
@@ -248,7 +268,7 @@ export default function RegisterPage() {
                 <AccordionContent className="p-4 space-y-4">
                    <FormField control={form.control} name="maritalStatus" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Marital Status *</FormLabel>
+                      <FormLabel className={errors.maritalStatus ? 'text-destructive' : ''}>Marital Status *</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue placeholder="Select your marital status" /></SelectTrigger></FormControl>
                         <SelectContent>
@@ -296,25 +316,106 @@ export default function RegisterPage() {
                 </AccordionTrigger>
                 <AccordionContent className="p-4 space-y-4">
                   <p className="text-sm text-muted-foreground mb-4">Control who can see your information. 'Consent-based' means others must request to see it. Fields not listed here are public by default.</p>
-                  {privacyFields.map(field => {
-                    if (!field.condition) {
-                        return null;
-                    }
-                    return (
-                        <Card key={field.name} className="p-4">
-                            <CardContent className="p-0">
-                                <div className="flex items-center justify-between">
-                                    <Label htmlFor={`privacy-${field.name}`} className="font-medium">{field.label}</Label>
-                                    <div className="flex items-center space-x-2">
-                                        <Label htmlFor={`privacy-${field.name}-public`}>Public</Label>
-                                        <Switch id={`privacy-${field.name}`} defaultChecked />
-                                        <Label htmlFor={`privacy-${field.name}-consent`}>Consent</Label>
-                                    </div>
+                  
+                  {!!presentAddressValue && (
+                     <Card className="p-4">
+                        <CardContent className="p-0">
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor={`privacy-presentAddress`} className="font-medium">Present Address</Label>
+                                <div className="flex items-center space-x-2">
+                                    <Label htmlFor={`privacy-presentAddress-public`}>Public</Label>
+                                    <Switch id={`privacy-presentAddress`} defaultChecked />
+                                    <Label htmlFor={`privacy-presentAddress-consent`}>Consent</Label>
                                 </div>
-                            </CardContent>
-                        </Card>
-                    )
-                  })}
+                            </div>
+                        </CardContent>
+                    </Card>
+                  )}
+                  {!!permanentAddressValue && (
+                     <Card className="p-4">
+                        <CardContent className="p-0">
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor={`privacy-permanentAddress`} className="font-medium">Permanent Address</Label>
+                                <div className="flex items-center space-x-2">
+                                    <Label htmlFor={`privacy-permanentAddress-public`}>Public</Label>
+                                    <Switch id={`privacy-permanentAddress`} defaultChecked />
+                                    <Label htmlFor={`privacy-permanentAddress-consent`}>Consent</Label>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                  )}
+                  {!!phoneValue && (
+                     <Card className="p-4">
+                        <CardContent className="p-0">
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor={`privacy-phone`} className="font-medium">Phone Number</Label>
+                                <div className="flex items-center space-x-2">
+                                    <Label htmlFor={`privacy-phone-public`}>Public</Label>
+                                    <Switch id={`privacy-phone`} defaultChecked />
+                                    <Label htmlFor={`privacy-phone-consent`}>Consent</Label>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                  )}
+                  {!!professionValue && (
+                     <Card className="p-4">
+                        <CardContent className="p-0">
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor={`privacy-profession`} className="font-medium">Profession</Label>
+                                <div className="flex items-center space-x-2">
+                                    <Label htmlFor={`privacy-profession-public`}>Public</Label>
+                                    <Switch id={`privacy-profession`} defaultChecked />
+                                    <Label htmlFor={`privacy-profession-consent`}>Consent</Label>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                  )}
+                   {!!companyValue && (
+                     <Card className="p-4">
+                        <CardContent className="p-0">
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor={`privacy-company`} className="font-medium">Company / Organization</Label>
+                                <div className="flex items-center space-x-2">
+                                    <Label htmlFor={`privacy-company-public`}>Public</Label>
+                                    <Switch id={`privacy-company`} defaultChecked />
+                                    <Label htmlFor={`privacy-company-consent`}>Consent</Label>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                  )}
+                  {maritalStatus === 'Married' && !!spouseDetailsValue && (
+                     <Card className="p-4">
+                        <CardContent className="p-0">
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor={`privacy-spouseDetails`} className="font-medium">Spouse Details</Label>
+                                <div className="flex items-center space-x-2">
+                                    <Label htmlFor={`privacy-spouseDetails-public`}>Public</Label>
+                                    <Switch id={`privacy-spouseDetails`} defaultChecked />
+                                    <Label htmlFor={`privacy-spouseDetails-consent`}>Consent</Label>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                  )}
+                  {showFamilyDetails && !!childrenDetailsValue && (
+                     <Card className="p-4">
+                        <CardContent className="p-0">
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor={`privacy-childrenDetails`} className="font-medium">Children Details</Label>
+                                <div className="flex items-center space-x-2">
+                                    <Label htmlFor={`privacy-childrenDetails-public`}>Public</Label>
+                                    <Switch id={`privacy-childrenDetails`} defaultChecked />
+                                    <Label htmlFor={`privacy-childrenDetails-consent`}>Consent</Label>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                  )}
+
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
