@@ -55,7 +55,8 @@ export type CommunityEvent = {
     title: string;
     dateFrom: Date;
     dateTo: Date;
-    time?: string;
+    timeFrom?: string;
+    timeTo?: string;
     venue: string;
     description: string;
     imageUrl?: string;

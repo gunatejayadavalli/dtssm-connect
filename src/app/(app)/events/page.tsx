@@ -31,6 +31,13 @@ export default function EventsPage() {
     }
     return `${fromStr} to ${toStr}`;
   }
+  
+  const formatTimeRange = (from?: string, to?: string) => {
+    if (from && to) return `${from} to ${to}`;
+    if (from) return `Starts at ${from}`;
+    if (to) return `Ends at ${to}`;
+    return null;
+  }
 
   return (
     <div className="space-y-8">
@@ -53,35 +60,38 @@ export default function EventsPage() {
         <h2 className="text-2xl font-semibold font-headline mb-4">Upcoming Events</h2>
         {upcomingEvents.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
-            {upcomingEvents.map((event) => (
-              <Card key={event.id} className="flex flex-col">
-                {event.imageUrl && (
-                  <div className="relative h-48 w-full">
-                    <Image src={event.imageUrl} alt={event.title} fill className="object-cover rounded-t-lg" data-ai-hint="community event" />
-                  </div>
-                )}
-                <CardHeader>
-                  <Badge variant="secondary" className="w-fit mb-2">{formatDateRange(event.dateFrom, event.dateTo)}</Badge>
-                  <CardTitle className="font-headline">{event.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-grow space-y-2 text-sm">
-                  {event.time && (
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        <span>{event.time}</span>
+            {upcomingEvents.map((event) => {
+              const timeDisplay = formatTimeRange(event.timeFrom, event.timeTo);
+              return (
+                <Card key={event.id} className="flex flex-col">
+                  {event.imageUrl && (
+                    <div className="relative h-48 w-full">
+                      <Image src={event.imageUrl} alt={event.title} fill className="object-cover rounded-t-lg" data-ai-hint="community event" />
                     </div>
                   )}
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <MapPin className="h-4 w-4" />
-                    <span>{event.venue}</span>
-                  </div>
-                  <p className="pt-2">{event.description}</p>
-                </CardContent>
-                <CardFooter>
-                  <Button variant="outline">View Details</Button>
-                </CardFooter>
-              </Card>
-            ))}
+                  <CardHeader>
+                    <Badge variant="secondary" className="w-fit mb-2">{formatDateRange(event.dateFrom, event.dateTo)}</Badge>
+                    <CardTitle className="font-headline">{event.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-grow space-y-2 text-sm">
+                    {timeDisplay && (
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                          <Clock className="h-4 w-4" />
+                          <span>{timeDisplay}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <MapPin className="h-4 w-4" />
+                      <span>{event.venue}</span>
+                    </div>
+                    <p className="pt-2">{event.description}</p>
+                  </CardContent>
+                  <CardFooter>
+                    <Button variant="outline">View Details</Button>
+                  </CardFooter>
+                </Card>
+              )
+            })}
           </div>
         ) : (
           <p className="text-muted-foreground">No upcoming events scheduled. Please check back later.</p>

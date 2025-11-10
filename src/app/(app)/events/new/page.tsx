@@ -17,7 +17,8 @@ const eventSchema = z.object({
   title: z.string().min(3, "Title is required"),
   dateFrom: z.string().nonempty("Start date is required"),
   dateTo: z.string().nonempty("End date is required"),
-  time: z.string().optional(),
+  timeFrom: z.string().optional(),
+  timeTo: z.string().optional(),
   venue: z.string().min(3, "Venue is required"),
   description: z.string().max(1000, "Description is too long").optional(),
 });
@@ -31,7 +32,8 @@ export default function NewEventPage() {
         title: '',
         dateFrom: '',
         dateTo: '',
-        time: '',
+        timeFrom: '',
+        timeTo: '',
         venue: '',
         description: '',
     },
@@ -77,9 +79,14 @@ export default function NewEventPage() {
                   <FormItem><FormLabel>Date To</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
               </div>
-               <FormField control={form.control} name="time" render={({ field }) => (
-                  <FormItem><FormLabel>Time (Optional)</FormLabel><FormControl><Input type="text" placeholder="e.g., 11:00 AM - 4:00 PM" {...field} /></FormControl><FormMessage /></FormItem>
+               <div className="grid sm:grid-cols-2 gap-4">
+                <FormField control={form.control} name="timeFrom" render={({ field }) => (
+                  <FormItem><FormLabel>Time From (Optional)</FormLabel><FormControl><Input type="text" placeholder="e.g., 11:00 AM" {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
+                <FormField control={form.control} name="timeTo" render={({ field }) => (
+                  <FormItem><FormLabel>Time To (Optional)</FormLabel><FormControl><Input type="text" placeholder="e.g., 4:00 PM" {...field} /></FormControl><FormMessage /></FormItem>
+                )} />
+              </div>
             </CardContent>
           </Card>
           
