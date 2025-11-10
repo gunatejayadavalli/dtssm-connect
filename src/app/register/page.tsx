@@ -49,12 +49,12 @@ const formSchema = z.object({
   dob: z.string().min(1, "Date of Birth is required."),
   gender: z.enum(['Male', 'Female', 'Other'], { required_error: 'Gender is required.' }),
   phone: z.string().min(10, "A valid 10-digit phone number is required."),
-  fatherName: z.string().min(2, "Father's name is required."),
+  fatherName: z.string().optional(),
   motherName: z.string().optional(),
-  presentAddress: z.string().min(5, "Address is required."),
+  presentAddress: z.string().optional(),
   permanentAddress: z.string().optional(),
   city: z.string().min(2, "City is required."),
-  profession: z.string().min(2, "Profession is required."),
+  profession: z.string().optional(),
   company: z.string().optional(),
   maritalStatus: z.enum(['Single', 'Married', 'Widowed', 'Divorced'], { required_error: 'Marital status is required.' }),
   spouseDetails: z.string().optional(),
@@ -82,10 +82,16 @@ export default function RegisterPage() {
     },
   });
 
-  const maritalStatus = form.watch('maritalStatus');
-  const permanentAddressValue = form.watch('permanentAddress');
-  const spouseDetailsValue = form.watch('spouseDetails');
-  const childrenDetailsValue = form.watch('childrenDetails');
+  const { watch } = form;
+  const maritalStatus = watch('maritalStatus');
+  const phoneValue = watch('phone');
+  const presentAddressValue = watch('presentAddress');
+  const permanentAddressValue = watch('permanentAddress');
+  const professionValue = watch('profession');
+  const companyValue = watch('company');
+  const spouseDetailsValue = watch('spouseDetails');
+  const childrenDetailsValue = watch('childrenDetails');
+  
   const showFamilyDetails = maritalStatus && ['Married', 'Widowed', 'Divorced'].includes(maritalStatus);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -95,11 +101,11 @@ export default function RegisterPage() {
   }
   
   const privacyFields = [
-      { name: 'phone', label: 'Phone Number', condition: true },
-      { name: 'presentAddress', label: 'Present Address', condition: true },
+      { name: 'phone', label: 'Phone Number', condition: !!phoneValue },
+      { name: 'presentAddress', label: 'Present Address', condition: !!presentAddressValue },
       { name: 'permanentAddress', label: 'Permanent Address', condition: !!permanentAddressValue },
-      { name: 'profession', label: 'Profession', condition: true },
-      { name: 'company', label: 'Company / Organization', condition: true },
+      { name: 'profession', label: 'Profession', condition: !!professionValue },
+      { name: 'company', label: 'Company / Organization', condition: !!companyValue },
       { name: 'spouseDetails', label: 'Spouse Details', condition: maritalStatus === 'Married' && !!spouseDetailsValue },
       { name: 'childrenDetails', label: 'Children Details', condition: showFamilyDetails && !!childrenDetailsValue},
   ];
@@ -133,14 +139,14 @@ export default function RegisterPage() {
                   <FormField control={form.control} name="name" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Full Name</FormLabel>
-                      <FormControl><Input placeholder="Your full name" {...field} value={field.value ?? ''} /></FormControl>
+                      <FormControl><Input placeholder="Your full name" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="dob" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Date of Birth</FormLabel>
-                      <FormControl><Input type="date" {...field} value={field.value ?? ''} /></FormControl>
+                      <FormControl><Input type="date" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
@@ -161,7 +167,7 @@ export default function RegisterPage() {
                   <FormField control={form.control} name="phone" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Phone Number (for login)</FormLabel>
-                      <FormControl><Input type="tel" placeholder="Your 10-digit mobile number" {...field} value={field.value ?? ''} /></FormControl>
+                      <FormControl><Input type="tel" placeholder="Your 10-digit mobile number" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
@@ -178,14 +184,14 @@ export default function RegisterPage() {
                   <FormField control={form.control} name="fatherName" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Father's Name</FormLabel>
-                      <FormControl><Input placeholder="Your father's name" {...field} value={field.value ?? ''} /></FormControl>
+                      <FormControl><Input placeholder="Your father's name" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                    <FormField control={form.control} name="motherName" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Mother's Name</FormLabel>
-                      <FormControl><Input placeholder="Your mother's name" {...field} value={field.value ?? ''} /></FormControl>
+                      <FormControl><Input placeholder="Your mother's name" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
@@ -202,21 +208,21 @@ export default function RegisterPage() {
                   <FormField control={form.control} name="presentAddress" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Present Address</FormLabel>
-                      <FormControl><Input placeholder="Your current address" {...field} value={field.value ?? ''} /></FormControl>
+                      <FormControl><Input placeholder="Your current address" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="permanentAddress" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Permanent Address</FormLabel>
-                      <FormControl><Input placeholder="(If different from present)" {...field} value={field.value ?? ''} /></FormControl>
+                      <FormControl><Input placeholder="(If different from present)" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="city" render={({ field }) => (
                     <FormItem>
                       <FormLabel>City / Place</FormLabel>
-                      <FormControl><Input placeholder="e.g., Hyderabad" {...field} value={field.value ?? ''} /></FormControl>
+                      <FormControl><Input placeholder="e.g., Hyderabad" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
@@ -233,14 +239,14 @@ export default function RegisterPage() {
                    <FormField control={form.control} name="profession" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Profession</FormLabel>
-                      <FormControl><Input placeholder="e.g., Software Engineer" {...field} value={field.value ?? ''} /></FormControl>
+                      <FormControl><Input placeholder="e.g., Software Engineer" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="company" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Company / Organization</FormLabel>
-                      <FormControl><Input placeholder="Your company name" {...field} value={field.value ?? ''} /></FormControl>
+                      <FormControl><Input placeholder="Your company name" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
@@ -273,7 +279,7 @@ export default function RegisterPage() {
                     <FormField control={form.control} name="spouseDetails" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Spouse Details</FormLabel>
-                        <FormControl><Input placeholder="Spouse Name & details" {...field} value={field.value ?? ''} /></FormControl>
+                        <FormControl><Input placeholder="Spouse Name & details" {...field} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
@@ -289,7 +295,6 @@ export default function RegisterPage() {
                             <Textarea
                               placeholder="Please provide names and ages of your children."
                               {...field}
-                              value={field.value ?? ''}
                             />
                           </FormControl>
                           <FormMessage />
