@@ -1,16 +1,18 @@
+'use client';
+
 import Link from 'next/link';
-import { Search, Filter, Plus } from 'lucide-react';
+import { Search, Filter, Plus, User as UserIcon } from 'lucide-react';
 import { differenceInYears } from 'date-fns';
+import { useState, useMemo, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardFooter } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { mockBiodata, mockUsers } from '@/lib/data';
-import type { Biodata } from '@/lib/types';
+import type { Biodata, User } from '@/lib/types';
 
 const BiodataCard = ({ biodata }: { biodata: Biodata }) => {
-  const user = mockUsers.find(u => u.id === biodata.ownerUserId);
   const age = differenceInYears(new Date(), biodata.dob);
 
   return (
@@ -43,7 +45,22 @@ const BiodataCard = ({ biodata }: { biodata: Biodata }) => {
 };
 
 export default function BiodataPage() {
-  const activeBiodata = mockBiodata.filter(b => b.isActive);
+  const [filter, setFilter] = useState<'all' | 'mine'>('all');
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    // In a real app, you'd fetch the logged-in user's data
+    const user = mockUsers.find(u => u.roles.isAdmin) || mockUsers[0];
+    setLoggedInUser(user);
+  }, []);
+
+  const displayedBiodata = useMemo(() => {
+    const activeBiodata = mockBiodata.filter(b => b.isActive);
+    if (filter === 'mine' && loggedInUser) {
+      return activeBiodata.filter(b => b.ownerUserId === loggedInUser.id);
+    }
+    return activeBiodata;
+  }, [filter, loggedInUser]);
 
   return (
     <div className="space-y-6">
@@ -69,22 +86,34 @@ export default function BiodataPage() {
           <Filter className="mr-2 h-4 w-4" />
           Filter
         </Button>
+         {filter === 'all' ? (
+           <Button variant="outline" onClick={() => setFilter('mine')}>
+             <UserIcon className="mr-2 h-4 w-4" />
+             View My Biodatas
+           </Button>
+        ) : (
+           <Button onClick={() => setFilter('all')}>View All Biodatas</Button>
+        )}
       </div>
 
-      {activeBiodata.length > 0 ? (
+      {displayedBiodata.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {activeBiodata.map((biodata) => (
+          {displayedBiodata.map((biodata) => (
             <BiodataCard key={biodata.id} biodata={biodata} />
           ))}
         </div>
       ) : (
-        <Card className="text-center py-12">
+        <Card className="text-center py-12 md:col-span-2 lg:col-span-3">
           <CardContent>
             <h3 className="text-xl font-semibold">No Biodata Found</h3>
-            <p className="text-muted-foreground mt-2">There are currently no active biodata profiles.</p>
-            <Button asChild className="mt-4">
-                <Link href="/biodata/new">Create the First One</Link>
-            </Button>
+            <p className="text-muted-foreground mt-2">
+                {filter === 'mine' ? "You haven't submitted any biodatas yet." : "There are currently no active biodata profiles."}
+            </p>
+             {filter === 'all' && (
+                <Button asChild className="mt-4">
+                    <Link href="/biodata/new">Create the First One</Link>
+                </Button>
+             )}
           </CardContent>
         </Card>
       )}

@@ -33,6 +33,7 @@ export const mockUsers: User[] = [
     gender: 'Female',
     phone: '9876543211',
     isApproved: true,
+    registeredBy: 'usr_4',
     roles: { isAdmin: false },
      visibility: {
       phone: 'private',
@@ -104,7 +105,7 @@ export const mockBiodata: Biodata[] = [
   },
   {
     id: 'bio_2',
-    ownerUserId: 'usr_5', // Assuming user 5 exists
+    ownerUserId: 'usr_4', // Now owned by admin user for testing
     name: 'Sneha Reddy',
     dob: new Date('1995-08-22'),
     gender: 'Female',

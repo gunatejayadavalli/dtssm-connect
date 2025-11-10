@@ -18,6 +18,7 @@ export type User = {
   phone: string;
   profilePhotoUrl?: string;
   isApproved: boolean;
+  registeredBy?: string;
   roles: {
     isAdmin: boolean;
   };

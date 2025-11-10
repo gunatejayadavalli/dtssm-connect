@@ -1,6 +1,9 @@
-import { Search, Filter, Plus } from 'lucide-react';
-import Image from 'next/image';
+'use client';
+
+import { Search, Filter, Plus, User as UserIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useState, useEffect, useMemo } from 'react';
+
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -35,7 +38,22 @@ const MemberCard = ({ user }: { user: User }) => (
 );
 
 export default function MembersPage() {
-  const approvedUsers = mockUsers.filter(user => user.isApproved);
+  const [filter, setFilter] = useState<'all' | 'mine'>('all');
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    // In a real app, you'd fetch the logged-in user's data
+    const user = mockUsers.find(u => u.roles.isAdmin) || mockUsers[0];
+    setLoggedInUser(user);
+  }, []);
+
+  const displayedUsers = useMemo(() => {
+    const approvedUsers = mockUsers.filter(user => user.isApproved);
+    if (filter === 'mine' && loggedInUser) {
+      return approvedUsers.filter(user => user.registeredBy === loggedInUser.id);
+    }
+    return approvedUsers;
+  }, [filter, loggedInUser]);
 
   return (
     <div className="space-y-6">
@@ -44,12 +62,14 @@ export default function MembersPage() {
           <h1 className="text-3xl font-bold font-headline">Member Directory</h1>
           <p className="text-muted-foreground">Find and connect with community members.</p>
         </div>
-        <Button asChild>
-            <Link href="/members/new">
-                <Plus className="mr-2 h-4 w-4" />
-                Add New Member
-            </Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button asChild>
+              <Link href="/members/new">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add New Member
+              </Link>
+          </Button>
+        </div>
       </div>
       
       <div className="flex flex-col sm:flex-row gap-4">
@@ -61,13 +81,31 @@ export default function MembersPage() {
           <Filter className="mr-2 h-4 w-4" />
           Filter
         </Button>
+        {filter === 'all' ? (
+           <Button variant="outline" onClick={() => setFilter('mine')}>
+             <UserIcon className="mr-2 h-4 w-4" />
+             View My Members
+           </Button>
+        ) : (
+           <Button onClick={() => setFilter('all')}>View All Members</Button>
+        )}
       </div>
 
       <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {approvedUsers.map((user) => (
+        {displayedUsers.map((user) => (
           <MemberCard key={user.id} user={user} />
         ))}
       </div>
+       {displayedUsers.length === 0 && (
+          <Card className="text-center py-12 md:col-span-2 lg:col-span-3 xl:col-span-4">
+              <CardContent>
+                <h3 className="text-xl font-semibold">No Members Found</h3>
+                <p className="text-muted-foreground mt-2">
+                    {filter === 'mine' ? "You haven't added any members yet." : "There are currently no approved members."}
+                </p>
+              </CardContent>
+          </Card>
+      )}
     </div>
   );
 }
