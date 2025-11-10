@@ -103,8 +103,8 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
         <div className="p-3 border-t border-border">
             <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="time-toggle" className="text-sm">Add Time</Label>
-                  <Switch id="time-toggle" checked={timeEnabled} onCheckedChange={handleTimeToggle} />
+                  <Label htmlFor="time-toggle" className={cn("text-sm", !date && "text-muted-foreground")}>Add Time</Label>
+                  <Switch id="time-toggle" checked={timeEnabled} onCheckedChange={handleTimeToggle} disabled={!date} />
                 </div>
                 {timeEnabled && (
                     <Input
