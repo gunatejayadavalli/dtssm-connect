@@ -14,6 +14,7 @@ import {
   ChevronLeft,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -65,6 +66,7 @@ const formSchema = z.object({
 type FormSchemaType = z.infer<typeof formSchema>;
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [openAccordions, setOpenAccordions] = useState<string[]>(['basic-info']);
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isOtpVerified, setIsOtpVerified] = useState(false);
@@ -163,7 +165,7 @@ export default function RegisterPage() {
     }
     console.log(values);
     // On success, redirect to awaiting approval
-    window.location.href = '/awaiting-approval';
+    router.push('/awaiting-approval');
   }
   
   return (
@@ -219,7 +221,7 @@ export default function RegisterPage() {
                   )} />
                   <FormField control={form.control} name="phone" render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={errors.phone ? 'text-destructive' : ''}>Phone Number (Same is used for login) *</FormLabel>
+                      <FormLabel className={errors.phone ? 'text-destructive' : ''}>Phone Number (for login) *</FormLabel>
                        <div className="flex items-center gap-2">
                         <FormControl>
                           <Input type="tel" placeholder="Your 10-digit mobile number" {...field} disabled={isOtpVerified || isOtpSent} />

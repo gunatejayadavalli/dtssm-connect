@@ -45,9 +45,9 @@ export default function MembersPage() {
           <p className="text-muted-foreground">Find and connect with community members.</p>
         </div>
         <Button asChild>
-            <Link href="/register">
+            <Link href="/members/new">
                 <Plus className="mr-2 h-4 w-4" />
-                Register New Member
+                Add New Member
             </Link>
         </Button>
       </div>
