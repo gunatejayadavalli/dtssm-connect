@@ -17,10 +17,10 @@ import { mockEvents } from '@/lib/data';
 import { useEffect } from 'react';
 
 const eventSchema = z.object({
-  title: z.string().min(3, "Title is required"),
-  dateFrom: z.date({ required_error: 'Start date is required' }),
+  title: z.string().min(1, ' '),
+  dateFrom: z.date({ required_error: ' ' }),
   dateTo: z.date().optional(),
-  venue: z.string().min(3, "Venue is required"),
+  venue: z.string().min(1, ' '),
   description: z.string().max(1000, "Description is too long").optional(),
 });
 
