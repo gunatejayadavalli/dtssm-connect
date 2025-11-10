@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -99,6 +100,7 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
           selected={date}
           onSelect={handleDateSelect}
           initialFocus
+          month={date}
         />
         <div className="p-3 border-t border-border">
             <div className="space-y-2">
