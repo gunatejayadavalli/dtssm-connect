@@ -55,6 +55,7 @@ const formSchema = z.object({
   profession: z.string().min(2, "Profession is required."),
   company: z.string().optional(),
   maritalStatus: z.enum(['Single', 'Married', 'Widowed', 'Divorced']),
+  spouseDetails: z.string().optional(),
 });
 
 export default function RegisterPage() {
@@ -70,6 +71,8 @@ export default function RegisterPage() {
     },
   });
 
+  const maritalStatus = form.watch('maritalStatus');
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     // On success, redirect to awaiting approval
@@ -81,7 +84,7 @@ export default function RegisterPage() {
       { name: 'permanentAddress', label: 'Permanent Address' },
       { name: 'profession', label: 'Profession' },
       { name: 'company', label: 'Company / Organization' },
-      { name: 'spouseDetails', label: 'Spouse Details (if married)' },
+      { name: 'spouseDetails', label: 'Spouse Details' },
       { name: 'phone', label: 'Phone Number' },
   ]
 
@@ -250,7 +253,15 @@ export default function RegisterPage() {
                       <FormMessage />
                     </FormItem>
                   )} />
-                  {/* Conditional Spouse Details field would go here */}
+                  {maritalStatus === 'Married' && (
+                    <FormField control={form.control} name="spouseDetails" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Spouse Details</FormLabel>
+                        <FormControl><Input placeholder="Spouse Name & details" {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                  )}
                 </AccordionContent>
               </AccordionItem>
 
@@ -262,18 +273,23 @@ export default function RegisterPage() {
                 </AccordionTrigger>
                 <AccordionContent className="p-4 space-y-4">
                   <p className="text-sm text-muted-foreground mb-4">Control who can see your information. 'Consent-based' means others must request to see it. Fields not listed here are public.</p>
-                  {privacyFields.map(field => (
-                    <Card key={field.name} className="p-4">
-                        <div className="flex items-center justify-between">
-                            <Label htmlFor={`privacy-${field.name}`} className="font-medium">{field.label}</Label>
-                            <div className="flex items-center space-x-2">
-                                <Label htmlFor={`privacy-${field.name}-public`}>Public</Label>
-                                <Switch id={`privacy-${field.name}`} defaultChecked />
-                                <Label htmlFor={`privacy-${field.name}-consent`}>Consent</Label>
+                  {privacyFields.map(field => {
+                    if (field.name === 'spouseDetails' && maritalStatus !== 'Married') {
+                        return null;
+                    }
+                    return (
+                        <Card key={field.name} className="p-4">
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor={`privacy-${field.name}`} className="font-medium">{field.label}</Label>
+                                <div className="flex items-center space-x-2">
+                                    <Label htmlFor={`privacy-${field.name}-public`}>Public</Label>
+                                    <Switch id={`privacy-${field.name}`} defaultChecked />
+                                    <Label htmlFor={`privacy-${field.name}-consent`}>Consent</Label>
+                                </div>
                             </div>
-                        </div>
-                    </Card>
-                  ))}
+                        </Card>
+                    )
+                  })}
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
