@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Calendar, Clock, MapPin, Plus } from 'lucide-react';
+import { Calendar, Clock, MapPin, Plus, Edit, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,9 +10,12 @@ import { Badge } from '@/components/ui/badge';
 import { mockEvents, mockUsers } from '@/lib/data';
 import { useEffect, useState } from 'react';
 import type { User } from '@/lib/types';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { useToast } from '@/hooks/use-toast';
 
 export default function EventsPage() {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     // In a real app, this would be fetched from auth context
@@ -40,6 +43,15 @@ export default function EventsPage() {
     if (fromTime) return `Starts at ${fromTime}`;
     if (toTime) return `Ends at ${toTime}`;
     return null;
+  }
+  
+  const handleDelete = (eventId: string) => {
+    console.log(`Deleting event ${eventId}`);
+    toast({
+      title: "Event Deleted",
+      description: "The event has been successfully deleted.",
+    });
+    // Here you would typically refetch the events or remove it from the state
   }
 
   return (
@@ -89,8 +101,38 @@ export default function EventsPage() {
                     </div>
                     <p className="pt-2">{event.description}</p>
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="flex justify-between">
                     <Button variant="outline">View Details</Button>
+                    {loggedInUser?.roles.isAdmin && (
+                        <div className="flex gap-2">
+                            <Button variant="ghost" size="sm" asChild>
+                                <Link href={`/events/${event.id}/edit`}>
+                                    <Edit className="mr-2 h-4 w-4" />
+                                    Edit
+                                </Link>
+                            </Button>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="destructive" size="sm">
+                                        <Trash2 className="mr-2 h-4 w-4" />
+                                        Delete
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently delete the event "{event.title}".
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => handleDelete(event.id)}>Continue</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </div>
+                    )}
                   </CardFooter>
                 </Card>
               )
@@ -114,6 +156,30 @@ export default function EventsPage() {
                  <CardContent>
                     <p className="text-xs text-muted-foreground line-clamp-2">{event.description}</p>
                  </CardContent>
+                 {loggedInUser?.roles.isAdmin && (
+                    <CardFooter>
+                         <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button variant="destructive" size="sm" className="w-full">
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    Delete
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will permanently delete the event "{event.title}".
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => handleDelete(event.id)}>Continue</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    </CardFooter>
+                 )}
               </Card>
             ))}
           </div>
