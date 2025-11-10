@@ -11,7 +11,6 @@ const navItems: NavItem[] = [
   { href: '/members', label: 'Members', icon: Users },
   { href: '/biodata', label: 'Biodata', icon: BookUser },
   { href: '/events', label: 'Events', icon: Calendar },
-  { href: '/profile', label: 'My Profile', icon: User },
 ];
 
 export default function DesktopSidebar({ isMobile = false }: { isMobile?: boolean }) {

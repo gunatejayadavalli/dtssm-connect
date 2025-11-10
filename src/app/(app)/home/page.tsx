@@ -30,12 +30,6 @@ const quickNavItems = [
     description: 'Browse profiles of unmarried members.',
   },
   {
-    title: 'My Profile',
-    href: '/profile',
-    icon: User,
-    description: 'View and manage your information.',
-  },
-  {
     title: 'Community Events',
     href: '/events',
     icon: Calendar,
@@ -96,7 +90,7 @@ export default function HomePage() {
         </Alert>
       )}
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {quickNavItems.map(item => (
           <Card
             key={item.title}
@@ -112,7 +106,7 @@ export default function HomePage() {
               </div>
             </CardHeader>
             <CardContent className="flex flex-col flex-grow">
-              <p className="text-sm text-muted-foreground flex-grow">
+              <p className="text-sm text-muted-foreground flex-grow min-h-[60px]">
                 {item.description}
               </p>
               <Button variant="link" className="p-0 h-auto mt-4 self-start" asChild>
