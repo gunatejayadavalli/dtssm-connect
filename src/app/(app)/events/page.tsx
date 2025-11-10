@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Calendar, Clock, MapPin, Plus, Edit, Trash2 } from 'lucide-react';
+import { Clock, MapPin, Plus, Edit, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -79,11 +79,6 @@ export default function EventsPage() {
               const timeDisplay = formatTimeRange(event.dateFrom, event.dateTo);
               return (
                 <Card key={event.id} className="flex flex-col">
-                  {event.imageUrl && (
-                    <div className="relative h-48 w-full">
-                      <Image src={event.imageUrl} alt={event.title} fill className="object-cover rounded-t-lg" data-ai-hint="community event" />
-                    </div>
-                  )}
                   <CardHeader>
                     <Badge variant="secondary" className="w-fit mb-2">{formatDateRange(event.dateFrom, event.dateTo)}</Badge>
                     <CardTitle className="font-headline">{event.title}</CardTitle>

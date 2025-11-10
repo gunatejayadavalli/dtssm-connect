@@ -50,7 +50,6 @@ export default function NewEventPage() {
         ...values,
         createdBy: loggedInUser?.id,
         isPublished: true,
-        imageUrl: `https://picsum.photos/seed/event${Date.now()}/800/400`
     });
     toast({
         title: "Event Created",
