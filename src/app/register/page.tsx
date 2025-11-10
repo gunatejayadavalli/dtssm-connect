@@ -85,6 +85,7 @@ export default function RegisterPage() {
   
   const privacyFields = [
       { name: 'presentAddress', label: 'Present Address' },
+      { name: 'permanentAddress', label: 'Permanent Address' },
       { name: 'spouseDetails', label: 'Spouse Details' },
       { name: 'childrenDetails', label: 'Children Details'},
       { name: 'phone', label: 'Phone Number' },
@@ -300,6 +301,9 @@ export default function RegisterPage() {
                         return null;
                     }
                     if (field.name === 'childrenDetails' && !showFamilyDetails) {
+                        return null;
+                    }
+                    if (field.name === 'permanentAddress' && !form.getValues().permanentAddress) {
                         return null;
                     }
                     return (
