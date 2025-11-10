@@ -76,18 +76,11 @@ export default function RegisterPage() {
     window.location.href = '/awaiting-approval';
   }
   
-  const formFields = [
-      { name: 'name', label: 'Full Name' },
-      { name: 'fatherName', label: "Father's Name" },
-      { name: 'motherName', label: "Mother's Name" },
-      { name: 'dob', label: 'Date of Birth' },
-      { name: 'gender', label: 'Gender' },
+  const privacyFields = [
       { name: 'presentAddress', label: 'Present Address' },
       { name: 'permanentAddress', label: 'Permanent Address' },
-      { name: 'city', label: 'City / Place' },
       { name: 'profession', label: 'Profession' },
       { name: 'company', label: 'Company / Organization' },
-      { name: 'maritalStatus', label: 'Marital Status' },
       { name: 'spouseDetails', label: 'Spouse Details (if married)' },
       { name: 'phone', label: 'Phone Number' },
   ]
@@ -268,8 +261,8 @@ export default function RegisterPage() {
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="p-4 space-y-4">
-                  <p className="text-sm text-muted-foreground mb-4">Control who can see your information. 'Consent-based' means others must request to see it.</p>
-                  {formFields.map(field => (
+                  <p className="text-sm text-muted-foreground mb-4">Control who can see your information. 'Consent-based' means others must request to see it. Fields not listed here are public.</p>
+                  {privacyFields.map(field => (
                     <Card key={field.name} className="p-4">
                         <div className="flex items-center justify-between">
                             <Label htmlFor={`privacy-${field.name}`} className="font-medium">{field.label}</Label>
