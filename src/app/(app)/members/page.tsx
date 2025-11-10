@@ -1,4 +1,4 @@
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, Plus } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
@@ -39,9 +39,17 @@ export default function MembersPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold font-headline">Member Directory</h1>
-        <p className="text-muted-foreground">Find and connect with community members.</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold font-headline">Member Directory</h1>
+          <p className="text-muted-foreground">Find and connect with community members.</p>
+        </div>
+        <Button asChild>
+            <Link href="/register">
+                <Plus className="mr-2 h-4 w-4" />
+                Register New Member
+            </Link>
+        </Button>
       </div>
       
       <div className="flex flex-col sm:flex-row gap-4">
