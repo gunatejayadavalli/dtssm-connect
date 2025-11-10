@@ -12,6 +12,7 @@ import {
   HeartHandshake,
   ChevronLeft,
   Baby,
+  Calendar,
 } from 'lucide-react';
 import { getMemberById } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -88,7 +89,7 @@ export default function MemberDetailPage({ params }: { params: { id: string } })
           </CardHeader>
           <CardContent className="space-y-4">
             <DetailItem icon={User} label="Gender" value={user.gender} />
-            <DetailItem icon={HeartHandshake} label="Date of Birth" value={format(user.dob, 'MMMM d, yyyy')} />
+            <DetailItem icon={Calendar} label="Date of Birth" value={format(user.dob, 'MMMM d, yyyy')} />
             <DetailItem icon={HeartHandshake} label="Marital Status" value={user.maritalStatus} />
           </CardContent>
         </Card>
