@@ -102,7 +102,7 @@ export default function HomePage() {
             key={item.title}
             className="hover:shadow-lg transition-shadow group flex flex-col"
           >
-            <CardHeader className="h-40">
+            <CardHeader>
               <div className="flex justify-between items-start">
                 <div className="space-y-2">
                   <item.icon className="h-8 w-8 text-primary" />
@@ -112,10 +112,10 @@ export default function HomePage() {
               </div>
             </CardHeader>
             <CardContent className="flex flex-col flex-grow">
-              <p className="text-sm text-muted-foreground flex-grow">
+              <p className="text-sm text-muted-foreground min-h-[40px]">
                 {item.description}
               </p>
-              <Button variant="link" className="p-0 h-auto mt-4 self-start" asChild>
+              <Button variant="link" className="p-0 h-auto mt-auto self-start" asChild>
                 <Link href={item.href}>Go to {item.title}</Link>
               </Button>
             </CardContent>
