@@ -4,12 +4,12 @@ import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { ChevronLeft, Calendar, Clock, MapPin, Info, ImagePlus } from 'lucide-react';
+import { ChevronLeft, Calendar, Clock, MapPin, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 
@@ -93,16 +93,6 @@ export default function NewEventPage() {
               <FormField control={form.control} name="description" render={({ field }) => (
                 <FormItem><FormLabel>Event Description</FormLabel><FormControl><Textarea placeholder="Provide a brief description of the event..." className="min-h-[120px]" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2"><ImagePlus className="h-5 w-5 text-primary" /> Event Image</CardTitle>
-                <CardDescription>Upload a banner or photo for the event (optional).</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Input type="file" accept="image/*" />
             </CardContent>
           </Card>
 
