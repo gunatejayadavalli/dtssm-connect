@@ -22,7 +22,7 @@ export default function LoginPage() {
             </div>
           <CardTitle className="text-2xl font-headline">DTSSM Connect</CardTitle>
           <CardDescription>
-            Enter your mobile number to login or register.
+            Enter your mobile number to login.
           </CardDescription>
         </CardHeader>
         <CardContent>
