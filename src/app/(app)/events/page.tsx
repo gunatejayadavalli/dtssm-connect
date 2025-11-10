@@ -20,8 +20,17 @@ export default function EventsPage() {
     setLoggedInUser(user);
   }, []);
 
-  const upcomingEvents = mockEvents.filter(event => event.date >= new Date()).sort((a,b) => a.date.getTime() - b.date.getTime());
-  const pastEvents = mockEvents.filter(event => event.date < new Date()).sort((a,b) => b.date.getTime() - a.date.getTime());
+  const upcomingEvents = mockEvents.filter(event => event.dateFrom >= new Date()).sort((a,b) => a.dateFrom.getTime() - b.dateFrom.getTime());
+  const pastEvents = mockEvents.filter(event => event.dateFrom < new Date()).sort((a,b) => b.dateFrom.getTime() - a.dateFrom.getTime());
+
+  const formatDateRange = (from: Date, to: Date) => {
+    const fromStr = format(from, 'MMMM d, yyyy');
+    const toStr = format(to, 'MMMM d, yyyy');
+    if (fromStr === toStr) {
+        return fromStr;
+    }
+    return `${fromStr} to ${toStr}`;
+  }
 
   return (
     <div className="space-y-8">
@@ -52,14 +61,16 @@ export default function EventsPage() {
                   </div>
                 )}
                 <CardHeader>
-                  <Badge variant="secondary" className="w-fit mb-2">{format(event.date, 'MMMM d, yyyy')}</Badge>
+                  <Badge variant="secondary" className="w-fit mb-2">{formatDateRange(event.dateFrom, event.dateTo)}</Badge>
                   <CardTitle className="font-headline">{event.title}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-grow space-y-2 text-sm">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Clock className="h-4 w-4" />
-                    <span>{event.time}</span>
-                  </div>
+                  {event.time && (
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                        <Clock className="h-4 w-4" />
+                        <span>{event.time}</span>
+                    </div>
+                  )}
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <MapPin className="h-4 w-4" />
                     <span>{event.venue}</span>
@@ -84,7 +95,7 @@ export default function EventsPage() {
             {pastEvents.map((event) => (
               <Card key={event.id} className="opacity-75 hover:opacity-100 transition-opacity">
                 <CardHeader>
-                    <Badge variant="outline" className="w-fit mb-2">{format(event.date, 'MMM d, yyyy')}</Badge>
+                    <Badge variant="outline" className="w-fit mb-2">{formatDateRange(event.dateFrom, event.dateTo)}</Badge>
                     <CardTitle className="text-base font-semibold">{event.title}</CardTitle>
                 </CardHeader>
                  <CardContent>

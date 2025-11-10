@@ -53,8 +53,9 @@ export type Biodata = {
 export type CommunityEvent = {
     id: string;
     title: string;
-    date: Date;
-    time: string;
+    dateFrom: Date;
+    dateTo: Date;
+    time?: string;
     venue: string;
     description: string;
     imageUrl?: string;
