@@ -15,7 +15,7 @@ import type { User } from '@/lib/types';
 
 const MemberCard = ({ user }: { user: User }) => (
   <Card className="hover:border-primary transition-colors">
-    <Link href={`/members/${user.id}`}>
+    <Link href={`/members/${user.id}`} className="flex flex-col h-full">
         <CardHeader className="flex flex-row items-center gap-4">
             <Avatar className="h-16 w-16">
                 <AvatarImage src={user.profilePhotoUrl} alt={user.name} data-ai-hint="profile avatar" />
@@ -23,13 +23,12 @@ const MemberCard = ({ user }: { user: User }) => (
             </Avatar>
             <div>
                 <h3 className="text-lg font-semibold font-headline">{user.name}</h3>
-                <p className="text-sm text-muted-foreground">{user.profession}</p>
+                {user.profession && <p className="text-sm text-muted-foreground">{user.profession}</p>}
                 <p className="text-sm text-muted-foreground">{user.city}</p>
             </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex-grow flex items-end">
             <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">{user.maritalStatus}</Badge>
                 {user.roles.isAdmin && <Badge variant="destructive">Admin</Badge>}
             </div>
         </CardContent>
