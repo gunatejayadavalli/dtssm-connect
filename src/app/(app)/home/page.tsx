@@ -102,7 +102,7 @@ export default function HomePage() {
             key={item.title}
             className="hover:shadow-lg transition-shadow group flex flex-col"
           >
-            <CardHeader>
+            <CardHeader className="h-40">
               <div className="flex justify-between items-start">
                 <div className="space-y-2">
                   <item.icon className="h-8 w-8 text-primary" />
