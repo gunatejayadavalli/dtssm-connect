@@ -14,11 +14,12 @@ import {
   Heart,
   Calendar as CalendarIcon,
   Scaling,
-  Info
+  Info,
+  Edit
 } from 'lucide-react';
 import { differenceInYears } from 'date-fns';
 
-import { getBiodataById } from '@/lib/data';
+import { getBiodataById, getMemberById } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
@@ -49,7 +50,8 @@ export default function BiodataDetailPage({ params }: { params: { id: string } }
   if (!biodata) {
     notFound();
   }
-
+  
+  const owner = getMemberById(biodata.ownerUserId);
   const age = differenceInYears(new Date(), biodata.dob);
 
   return (
@@ -146,6 +148,20 @@ export default function BiodataDetailPage({ params }: { params: { id: string } }
             </Card>
         </div>
       </div>
+       <Card className="bg-secondary/50">
+        <CardContent className="p-4 text-center">
+            <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
+                <Edit className="h-4 w-4" />
+                {owner ? (
+                     <>
+                     Biodata submitted by <Link href={`/members/${owner.id}`} className="font-medium text-primary hover:underline">{owner.name}</Link>.
+                    </>
+                ) : (
+                    "Biodata submitter information not available."
+                )}
+            </p>
+        </CardContent>
+       </Card>
     </div>
   );
 }

@@ -11,7 +11,8 @@ import {
   Users,
   HeartHandshake,
   ChevronLeft,
-  Baby
+  Baby,
+  Edit
 } from 'lucide-react';
 import { getMemberById } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -48,6 +49,8 @@ export default function MemberDetailPage({ params }: { params: { id: string } })
   }
   
   const isPhonePrivate = user.visibility?.phone !== 'public';
+  const registeredByMember = user.registeredBy ? getMemberById(user.registeredBy) : null;
+  const wasAddedBySelf = !registeredByMember || registeredByMember.id === user.id;
 
   return (
     <div className="space-y-6">
@@ -114,6 +117,21 @@ export default function MemberDetailPage({ params }: { params: { id: string } })
           </CardContent>
         </Card>
       </div>
+      
+       <Card className="bg-secondary/50">
+        <CardContent className="p-4 text-center">
+            <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
+                <Edit className="h-4 w-4" />
+                {wasAddedBySelf ? (
+                    "Profile added by Self."
+                ) : (
+                    <>
+                     Profile added by <Link href={`/members/${registeredByMember?.id}`} className="font-medium text-primary hover:underline">{registeredByMember?.name}</Link>.
+                    </>
+                )}
+            </p>
+        </CardContent>
+       </Card>
 
     </div>
   );

@@ -52,6 +52,7 @@ export const mockUsers: User[] = [
     gender: 'Male',
     phone: '9876543212',
     isApproved: false,
+    registeredBy: 'usr_1',
     roles: { isAdmin: false },
      visibility: {
       phone: 'consent-based',
@@ -72,6 +73,7 @@ export const mockUsers: User[] = [
     gender: 'Female',
     phone: '9999999999',
     isApproved: true,
+    registeredBy: 'usr_4',
     roles: { isAdmin: true },
     visibility: {
       phone: 'public',
