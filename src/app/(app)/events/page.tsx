@@ -35,7 +35,7 @@ export default function EventsPage() {
     return `${fromStr} to ${toStr}`;
   }
   
-  const formatTimeRange = (from?: Date, to?: Date) => {
+  const formatTimeRange = (from: Date, to: Date) => {
     const fromTime = from && (from.getHours() !== 0 || from.getMinutes() !== 0) ? format(from, 'p') : null;
     
     if (from && to && isSameDay(from, to)) {
@@ -99,10 +99,12 @@ export default function EventsPage() {
                       <MapPin className="h-4 w-4" />
                       <span>{event.venue}</span>
                     </div>
-                    <p className="pt-2">{event.description}</p>
+                    <p className="pt-2 line-clamp-3">{event.description}</p>
                   </CardContent>
                   <CardFooter className="flex justify-between">
-                    <Button variant="outline">View Details</Button>
+                    <Button variant="outline" asChild>
+                        <Link href={`/events/${event.id}`}>View Details</Link>
+                    </Button>
                     {loggedInUser?.roles.isAdmin && (
                         <div className="flex gap-2">
                             <Button variant="ghost" size="sm" asChild>
