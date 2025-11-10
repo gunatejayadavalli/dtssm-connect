@@ -23,6 +23,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
@@ -196,19 +197,21 @@ export default function RegisterPage() {
                 <AccordionContent className="p-4 space-y-4">
                   <FormField control={form.control} name="name" render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={errors.name ? 'text-destructive' : ''}>Full Name *</FormLabel>
+                      <FormLabel>Full Name *</FormLabel>
                       <FormControl><Input placeholder="Your full name" {...field} /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="dob" render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={errors.dob ? 'text-destructive' : ''}>Date of Birth *</FormLabel>
+                      <FormLabel>Date of Birth *</FormLabel>
                       <FormControl><Input type="date" {...field} /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
                    <FormField control={form.control} name="gender" render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={errors.gender ? 'text-destructive' : ''}>Gender *</FormLabel>
+                      <FormLabel>Gender *</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue placeholder="Select your gender" /></SelectTrigger></FormControl>
                         <SelectContent>
@@ -217,11 +220,12 @@ export default function RegisterPage() {
                           <SelectItem value="Other">Other</SelectItem>
                         </SelectContent>
                       </Select>
+                      <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="phone" render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={errors.phone ? 'text-destructive' : ''}>Phone Number (for login) *</FormLabel>
+                      <FormLabel>Phone Number (for login) *</FormLabel>
                        <div className="flex items-center gap-2">
                         <FormControl>
                           <Input type="tel" placeholder="Your 10-digit mobile number" {...field} disabled={isOtpVerified || isOtpSent} />
@@ -233,6 +237,7 @@ export default function RegisterPage() {
                            <div className="text-sm font-medium text-green-600">Verified</div>
                         )}
                       </div>
+                      <FormMessage />
                     </FormItem>
                   )} />
 
@@ -265,12 +270,14 @@ export default function RegisterPage() {
                     <FormItem>
                       <FormLabel>Father's Name</FormLabel>
                       <FormControl><Input placeholder="Your father's name" {...field} /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
                    <FormField control={form.control} name="motherName" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Mother's Name</FormLabel>
                       <FormControl><Input placeholder="Your mother's name" {...field} /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
                 </AccordionContent>
@@ -287,18 +294,21 @@ export default function RegisterPage() {
                     <FormItem>
                       <FormLabel>Present Address</FormLabel>
                       <FormControl><Input placeholder="Your current address" {...field} /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="permanentAddress" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Permanent Address</FormLabel>
                       <FormControl><Input placeholder="(If different from present)" {...field} /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="city" render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={errors.city ? 'text-destructive' : ''}>City / Place *</FormLabel>
+                      <FormLabel>City / Place *</FormLabel>
                       <FormControl><Input placeholder="e.g., Hyderabad" {...field} /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
                 </AccordionContent>
@@ -315,12 +325,14 @@ export default function RegisterPage() {
                     <FormItem>
                       <FormLabel>Profession</FormLabel>
                       <FormControl><Input placeholder="e.g., Software Engineer" {...field} /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="company" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Company / Organization</FormLabel>
                       <FormControl><Input placeholder="Your company name" {...field} /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
                 </AccordionContent>
@@ -335,7 +347,7 @@ export default function RegisterPage() {
                 <AccordionContent className="p-4 space-y-4">
                    <FormField control={form.control} name="maritalStatus" render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={errors.maritalStatus ? 'text-destructive' : ''}>Marital Status *</FormLabel>
+                      <FormLabel>Marital Status *</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue placeholder="Select your marital status" /></SelectTrigger></FormControl>
                         <SelectContent>
@@ -345,6 +357,7 @@ export default function RegisterPage() {
                           <SelectItem value="Divorced">Divorced</SelectItem>
                         </SelectContent>
                       </Select>
+                      <FormMessage />
                     </FormItem>
                   )} />
                   {maritalStatus === 'Married' && (
@@ -352,6 +365,7 @@ export default function RegisterPage() {
                       <FormItem>
                         <FormLabel>Spouse Details</FormLabel>
                         <FormControl><Input placeholder="Spouse Name & details" {...field} /></FormControl>
+                        <FormMessage />
                       </FormItem>
                     )} />
                   )}
@@ -368,6 +382,7 @@ export default function RegisterPage() {
                               {...field}
                             />
                           </FormControl>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
