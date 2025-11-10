@@ -106,7 +106,7 @@ export default function HomePage() {
               <div className="flex justify-between items-start">
                 <div className="space-y-2">
                   <item.icon className="h-8 w-8 text-primary" />
-                  <CardTitle className="font-headline">{item.title}</CardTitle>
+                  <CardTitle className="font-headline min-h-[56px]">{item.title}</CardTitle>
                 </div>
                 <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
               </div>
