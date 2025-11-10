@@ -122,7 +122,7 @@ export default function RegisterPage() {
           </Button>
           <h1 className="text-3xl font-bold font-headline mt-4">Complete Your Profile</h1>
           <p className="text-muted-foreground">
-            Your profile will be submitted for admin approval.
+            Your profile will be submitted for admin approval. Fields marked with * are mandatory.
           </p>
         </div>
         
@@ -138,21 +138,21 @@ export default function RegisterPage() {
                 <AccordionContent className="p-4 space-y-4">
                   <FormField control={form.control} name="name" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full Name</FormLabel>
+                      <FormLabel>Full Name *</FormLabel>
                       <FormControl><Input placeholder="Your full name" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="dob" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Date of Birth</FormLabel>
+                      <FormLabel>Date of Birth *</FormLabel>
                       <FormControl><Input type="date" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                    <FormField control={form.control} name="gender" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Gender</FormLabel>
+                      <FormLabel>Gender *</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue placeholder="Select your gender" /></SelectTrigger></FormControl>
                         <SelectContent>
@@ -166,7 +166,7 @@ export default function RegisterPage() {
                   )} />
                   <FormField control={form.control} name="phone" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone Number (for login)</FormLabel>
+                      <FormLabel>Phone Number (for login) *</FormLabel>
                       <FormControl><Input type="tel" placeholder="Your 10-digit mobile number" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
@@ -221,7 +221,7 @@ export default function RegisterPage() {
                   )} />
                   <FormField control={form.control} name="city" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>City / Place</FormLabel>
+                      <FormLabel>City / Place *</FormLabel>
                       <FormControl><Input placeholder="e.g., Hyderabad" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
@@ -262,7 +262,7 @@ export default function RegisterPage() {
                 <AccordionContent className="p-4 space-y-4">
                    <FormField control={form.control} name="maritalStatus" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Marital Status</FormLabel>
+                      <FormLabel>Marital Status *</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue placeholder="Select your marital status" /></SelectTrigger></FormControl>
                         <SelectContent>
