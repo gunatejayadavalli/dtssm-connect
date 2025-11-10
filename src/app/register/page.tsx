@@ -12,18 +12,15 @@ import {
   HeartHandshake,
   ShieldCheck,
   ChevronLeft,
-  Baby
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
@@ -39,24 +36,24 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
 const formSchema = z.object({
-  name: z.string().min(2, "Name is required."),
-  dob: z.string().min(1, "Date of Birth is required."),
-  gender: z.enum(['Male', 'Female', 'Other'], { required_error: 'Gender is required.' }),
-  phone: z.string().min(10, "A valid 10-digit phone number is required."),
+  name: z.string().min(1),
+  dob: z.string().min(1),
+  gender: z.enum(['Male', 'Female', 'Other']),
+  phone: z.string().min(1),
   fatherName: z.string().optional(),
   motherName: z.string().optional(),
   presentAddress: z.string().optional(),
   permanentAddress: z.string().optional(),
-  city: z.string().min(2, "City is required."),
+  city: z.string().min(1),
   profession: z.string().optional(),
   company: z.string().optional(),
-  maritalStatus: z.enum(['Single', 'Married', 'Widowed', 'Divorced'], { required_error: 'Marital status is required.' }),
+  maritalStatus: z.enum(['Single', 'Married', 'Widowed', 'Divorced']),
   spouseDetails: z.string().optional(),
   childrenDetails: z.string().optional(),
 });
@@ -140,14 +137,12 @@ export default function RegisterPage() {
                     <FormItem>
                       <FormLabel>Full Name *</FormLabel>
                       <FormControl><Input placeholder="Your full name" {...field} /></FormControl>
-                      <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="dob" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Date of Birth *</FormLabel>
                       <FormControl><Input type="date" {...field} /></FormControl>
-                      <FormMessage />
                     </FormItem>
                   )} />
                    <FormField control={form.control} name="gender" render={({ field }) => (
@@ -161,14 +156,12 @@ export default function RegisterPage() {
                           <SelectItem value="Other">Other</SelectItem>
                         </SelectContent>
                       </Select>
-                      <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="phone" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Phone Number (for login) *</FormLabel>
                       <FormControl><Input type="tel" placeholder="Your 10-digit mobile number" {...field} /></FormControl>
-                      <FormMessage />
                     </FormItem>
                   )} />
                 </AccordionContent>
@@ -185,14 +178,12 @@ export default function RegisterPage() {
                     <FormItem>
                       <FormLabel>Father's Name</FormLabel>
                       <FormControl><Input placeholder="Your father's name" {...field} /></FormControl>
-                      <FormMessage />
                     </FormItem>
                   )} />
                    <FormField control={form.control} name="motherName" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Mother's Name</FormLabel>
                       <FormControl><Input placeholder="Your mother's name" {...field} /></FormControl>
-                      <FormMessage />
                     </FormItem>
                   )} />
                 </AccordionContent>
@@ -209,21 +200,18 @@ export default function RegisterPage() {
                     <FormItem>
                       <FormLabel>Present Address</FormLabel>
                       <FormControl><Input placeholder="Your current address" {...field} /></FormControl>
-                      <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="permanentAddress" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Permanent Address</FormLabel>
                       <FormControl><Input placeholder="(If different from present)" {...field} /></FormControl>
-                      <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="city" render={({ field }) => (
                     <FormItem>
                       <FormLabel>City / Place *</FormLabel>
                       <FormControl><Input placeholder="e.g., Hyderabad" {...field} /></FormControl>
-                      <FormMessage />
                     </FormItem>
                   )} />
                 </AccordionContent>
@@ -240,14 +228,12 @@ export default function RegisterPage() {
                     <FormItem>
                       <FormLabel>Profession</FormLabel>
                       <FormControl><Input placeholder="e.g., Software Engineer" {...field} /></FormControl>
-                      <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="company" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Company / Organization</FormLabel>
                       <FormControl><Input placeholder="Your company name" {...field} /></FormControl>
-                      <FormMessage />
                     </FormItem>
                   )} />
                 </AccordionContent>
@@ -272,7 +258,6 @@ export default function RegisterPage() {
                           <SelectItem value="Divorced">Divorced</SelectItem>
                         </SelectContent>
                       </Select>
-                      <FormMessage />
                     </FormItem>
                   )} />
                   {maritalStatus === 'Married' && (
@@ -280,7 +265,6 @@ export default function RegisterPage() {
                       <FormItem>
                         <FormLabel>Spouse Details</FormLabel>
                         <FormControl><Input placeholder="Spouse Name & details" {...field} /></FormControl>
-                        <FormMessage />
                       </FormItem>
                     )} />
                   )}
@@ -297,7 +281,6 @@ export default function RegisterPage() {
                               {...field}
                             />
                           </FormControl>
-                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -319,14 +302,16 @@ export default function RegisterPage() {
                     }
                     return (
                         <Card key={field.name} className="p-4">
-                            <div className="flex items-center justify-between">
-                                <Label htmlFor={`privacy-${field.name}`} className="font-medium">{field.label}</Label>
-                                <div className="flex items-center space-x-2">
-                                    <Label htmlFor={`privacy-${field.name}-public`}>Public</Label>
-                                    <Switch id={`privacy-${field.name}`} defaultChecked />
-                                    <Label htmlFor={`privacy-${field.name}-consent`}>Consent</Label>
+                            <CardContent className="p-0">
+                                <div className="flex items-center justify-between">
+                                    <Label htmlFor={`privacy-${field.name}`} className="font-medium">{field.label}</Label>
+                                    <div className="flex items-center space-x-2">
+                                        <Label htmlFor={`privacy-${field.name}-public`}>Public</Label>
+                                        <Switch id={`privacy-${field.name}`} defaultChecked />
+                                        <Label htmlFor={`privacy-${field.name}-consent`}>Consent</Label>
+                                    </div>
                                 </div>
-                            </div>
+                            </CardContent>
                         </Card>
                     )
                   })}
