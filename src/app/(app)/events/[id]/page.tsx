@@ -21,31 +21,11 @@ import {
   CardTitle,
   CardFooter,
 } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
-const formatDateRange = (from: Date, to: Date) => {
-  const fromStr = format(from, 'PPP');
-  const toStr = format(to, 'PPP');
-  if (fromStr === toStr) {
-    return fromStr;
-  }
-  return `${fromStr} to ${toStr}`;
-};
-
-const formatTimeRange = (from: Date, to: Date) => {
-    const fromTime = from && (from.getHours() !== 0 || from.getMinutes() !== 0) ? format(from, 'p') : null;
-    
-    if (from && to && isSameDay(from, to)) {
-        const toTime = to && (to.getHours() !== 0 || to.getMinutes() !== 0) ? format(to, 'p') : null;
-        if (fromTime && toTime) return `${fromTime} to ${toTime}`;
-        if (fromTime) return `Starts at ${fromTime}`;
-        if (toTime) return `Ends at ${toTime}`;
-    } else if (fromTime) {
-        return `${fromTime} Onwards`;
-    }
-
-    return 'All day';
+const formatFullDateTime = (date: Date) => {
+    const hasTime = date.getHours() !== 0 || date.getMinutes() !== 0;
+    return format(date, hasTime ? 'PPP p' : 'PPP');
 };
 
 export default function EventDetailPage({ params }: { params: { id: string } }) {
@@ -62,6 +42,8 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
   };
 
   const createdBy = event.createdBy ? getMemberById(event.createdBy) : null;
+  
+  const isSingleDayEvent = isSameDay(event.dateFrom, event.dateTo);
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -75,19 +57,22 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
       <Card>
         <CardHeader>
-          <Badge variant="secondary" className="w-fit mb-2">
-            {formatDateRange(event.dateFrom, event.dateTo)}
-          </Badge>
           <CardTitle className="text-3xl font-bold font-headline">
             {event.title}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-start gap-4 text-muted-foreground">
-            <Clock className="h-5 w-5 mt-1" />
-            <div>
-              <p className="font-medium text-foreground">Time</p>
-              <p>{formatTimeRange(event.dateFrom, event.dateTo)}</p>
+            <Calendar className="h-5 w-5 mt-1" />
+            <div className="grid gap-1">
+              <div>
+                  <p className="font-medium text-foreground">From</p>
+                  <p>{formatFullDateTime(event.dateFrom)}</p>
+              </div>
+               <div>
+                  <p className="font-medium text-foreground">To</p>
+                  <p>{formatFullDateTime(event.dateTo)}</p>
+              </div>
             </div>
           </div>
           <div className="flex items-start gap-4 text-muted-foreground">
