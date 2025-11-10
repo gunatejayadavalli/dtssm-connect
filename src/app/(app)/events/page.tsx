@@ -36,14 +36,17 @@ export default function EventsPage() {
   }
   
   const formatTimeRange = (from?: Date, to?: Date) => {
-    if (from && to && !isSameDay(from, to)) return null;
-
     const fromTime = from && (from.getHours() !== 0 || from.getMinutes() !== 0) ? format(from, 'p') : null;
-    const toTime = to && (to.getHours() !== 0 || to.getMinutes() !== 0) ? format(to, 'p') : null;
+    
+    if (from && to && isSameDay(from, to)) {
+        const toTime = to && (to.getHours() !== 0 || to.getMinutes() !== 0) ? format(to, 'p') : null;
+        if (fromTime && toTime) return `${fromTime} to ${toTime}`;
+        if (fromTime) return `Starts at ${fromTime}`;
+        if (toTime) return `Ends at ${toTime}`;
+    } else if (fromTime) {
+        return `${fromTime} Onwards`;
+    }
 
-    if (fromTime && toTime) return `${fromTime} to ${toTime}`;
-    if (fromTime) return `Starts at ${fromTime}`;
-    if (toTime) return `Ends at ${toTime}`;
     return null;
   }
   
