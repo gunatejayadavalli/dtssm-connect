@@ -20,7 +20,7 @@ import { User } from '@/lib/types';
 const eventSchema = z.object({
   title: z.string().min(3, "Title is required"),
   dateFrom: z.date({ required_error: 'Start date is required' }),
-  dateTo: z.date({ required_error: 'End date is required' }),
+  dateTo: z.date().optional(),
   venue: z.string().min(3, "Venue is required"),
   description: z.string().max(1000, "Description is too long").optional(),
 });
@@ -98,7 +98,7 @@ export default function NewEventPage() {
                   name="dateTo"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Date To</FormLabel>
+                      <FormLabel>Date To (Optional)</FormLabel>
                       <DateTimePicker date={field.value} setDate={field.onChange} />
                       <FormMessage />
                     </FormItem>

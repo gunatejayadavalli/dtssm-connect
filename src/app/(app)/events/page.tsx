@@ -26,19 +26,19 @@ export default function EventsPage() {
   const upcomingEvents = mockEvents.filter(event => event.dateFrom >= new Date()).sort((a,b) => a.dateFrom.getTime() - b.dateFrom.getTime());
   const pastEvents = mockEvents.filter(event => event.dateFrom < new Date()).sort((a,b) => b.dateFrom.getTime() - a.dateFrom.getTime());
 
-  const formatDateRange = (from: Date, to: Date) => {
+  const formatDateRange = (from: Date, to: Date | undefined) => {
     const fromStr = format(from, 'PPP');
-    const toStr = format(to, 'PPP');
-    if (fromStr === toStr) {
+    if (!to || isSameDay(from, to)) {
         return fromStr;
     }
+    const toStr = format(to, 'PPP');
     return `${fromStr} to ${toStr}`;
   }
   
-  const formatTimeRange = (from: Date, to: Date) => {
+  const formatTimeRange = (from: Date, to: Date | undefined) => {
     const fromTime = from && (from.getHours() !== 0 || from.getMinutes() !== 0) ? format(from, 'p') : null;
     
-    if (from && to && isSameDay(from, to)) {
+    if (to && isSameDay(from, to)) {
         const toTime = to && (to.getHours() !== 0 || to.getMinutes() !== 0) ? format(to, 'p') : null;
         if (fromTime && toTime) return `${fromTime} to ${toTime}`;
         if (fromTime) return `Starts at ${fromTime}`;

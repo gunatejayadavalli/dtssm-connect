@@ -43,7 +43,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
   const createdBy = event.createdBy ? getMemberById(event.createdBy) : null;
   
-  const isSingleDayEvent = isSameDay(event.dateFrom, event.dateTo);
+  const isSingleDayEvent = !event.dateTo || isSameDay(event.dateFrom, event.dateTo);
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -69,10 +69,12 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                   <p className="font-medium text-foreground">From</p>
                   <p>{formatFullDateTime(event.dateFrom)}</p>
               </div>
-               <div>
-                  <p className="font-medium text-foreground">To</p>
-                  <p>{formatFullDateTime(event.dateTo)}</p>
-              </div>
+               {event.dateTo && (
+                <div>
+                    <p className="font-medium text-foreground">To</p>
+                    <p>{formatFullDateTime(event.dateTo)}</p>
+                </div>
+               )}
             </div>
           </div>
           <div className="flex items-start gap-4 text-muted-foreground">
