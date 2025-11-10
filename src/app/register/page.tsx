@@ -57,12 +57,19 @@ const formSchema = z.object({
   maritalStatus: z.enum(['Single', 'Married', 'Widowed', 'Divorced'], { required_error: 'Marital status is required' }),
   spouseDetails: z.string().optional(),
   childrenDetails: z.string().optional(),
+}).refine(data => data.phone.length === 10, {
+  message: "Phone number must be 10 digits",
+  path: ["phone"],
 });
 
 type FormSchemaType = z.infer<typeof formSchema>;
 
 export default function RegisterPage() {
   const [openAccordions, setOpenAccordions] = useState<string[]>(['basic-info']);
+  const [isOtpSent, setIsOtpSent] = useState(false);
+  const [isOtpVerified, setIsOtpVerified] = useState(false);
+  const [otp, setOtp] = useState('');
+  const [resendTimer, setResendTimer] = useState(0);
   
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
@@ -84,7 +91,7 @@ export default function RegisterPage() {
     },
   });
 
-  const { watch, formState: { errors } } = form;
+  const { watch, formState: { errors, isValid } } = form;
   const maritalStatus = watch('maritalStatus');
   const phoneValue = watch('phone');
   const presentAddressValue = watch('presentAddress');
@@ -95,6 +102,44 @@ export default function RegisterPage() {
   const childrenDetailsValue = watch('childrenDetails');
   
   const showFamilyDetails = maritalStatus && ['Married', 'Widowed', 'Divorced'].includes(maritalStatus);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (resendTimer > 0) {
+      timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [resendTimer]);
+
+  const handleSendOtp = () => {
+    // Basic validation before sending OTP
+    if (phoneValue.length !== 10) {
+      form.setError("phone", { type: "manual", message: "Please enter a valid 10-digit phone number." });
+      return;
+    }
+    // In a real app, this would trigger an API call to send OTP
+    console.log(`Sending OTP to ${phoneValue}`);
+    setIsOtpSent(true);
+    setResendTimer(30); // 30 second timer
+  };
+
+  const handleVerifyOtp = () => {
+    // In a real app, this would verify OTP via an API call
+    if (otp === '123456') { // Mock OTP
+      console.log('OTP Verified');
+      setIsOtpVerified(true);
+      setOtp('');
+      setIsOtpSent(false); // Hide OTP fields after verification
+    } else {
+      alert('Invalid OTP. Please try again.');
+    }
+  };
+
+  const handleResendOtp = () => {
+    if (resendTimer === 0) {
+      handleSendOtp();
+    }
+  };
 
   const accordionFields: Record<string, (keyof FormSchemaType)[]> = {
     'basic-info': ['name', 'dob', 'gender', 'phone'],
@@ -112,21 +157,15 @@ export default function RegisterPage() {
   };
 
   function onSubmit(values: FormSchemaType) {
+    if (!isOtpVerified) {
+      alert("Please verify your phone number before submitting.");
+      return;
+    }
     console.log(values);
     // On success, redirect to awaiting approval
     window.location.href = '/awaiting-approval';
   }
   
-  const privacyFields = [
-      { name: 'phone', label: 'Phone Number', condition: !!phoneValue },
-      { name: 'presentAddress', label: 'Present Address', condition: !!presentAddressValue },
-      { name: 'permanentAddress', label: 'Permanent Address', condition: !!permanentAddressValue },
-      { name: 'profession', label: 'Profession', condition: !!professionValue },
-      { name: 'company', label: 'Company / Organization', condition: !!companyValue },
-      { name: 'spouseDetails', label: 'Spouse Details', condition: maritalStatus === 'Married' && !!spouseDetailsValue },
-      { name: 'childrenDetails', label: 'Children Details', condition: showFamilyDetails && !!childrenDetailsValue},
-  ];
-
   return (
     <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
       <div className="max-w-3xl mx-auto">
@@ -180,10 +219,36 @@ export default function RegisterPage() {
                   )} />
                   <FormField control={form.control} name="phone" render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={errors.phone ? 'text-destructive' : ''}>Phone Number (for login) *</FormLabel>
-                      <FormControl><Input type="tel" placeholder="Your 10-digit mobile number" {...field} /></FormControl>
+                      <FormLabel className={errors.phone ? 'text-destructive' : ''}>Phone Number (Same is used for login) *</FormLabel>
+                       <div className="flex items-center gap-2">
+                        <FormControl>
+                          <Input type="tel" placeholder="Your 10-digit mobile number" {...field} disabled={isOtpVerified || isOtpSent} />
+                        </FormControl>
+                        {!isOtpSent && !isOtpVerified && (
+                          <Button type="button" onClick={handleSendOtp}>Send OTP</Button>
+                        )}
+                        {isOtpVerified && (
+                           <div className="text-sm font-medium text-green-600">Verified</div>
+                        )}
+                      </div>
                     </FormItem>
                   )} />
+
+                  {isOtpSent && !isOtpVerified && (
+                     <div className="space-y-2">
+                        <Label htmlFor="otp">Enter OTP</Label>
+                        <div className="flex items-center gap-2">
+                            <Input id="otp" value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="6-digit OTP" />
+                            <Button type="button" onClick={handleVerifyOtp}>Verify OTP</Button>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                            <button type="button" onClick={handleResendOtp} disabled={resendTimer > 0} className="text-primary disabled:text-muted-foreground disabled:cursor-not-allowed">
+                                Resend OTP {resendTimer > 0 ? `in ${resendTimer}s` : ''}
+                            </button>
+                        </p>
+                    </div>
+                  )}
+
                 </AccordionContent>
               </AccordionItem>
               
@@ -323,9 +388,9 @@ export default function RegisterPage() {
                             <div className="flex items-center justify-between">
                                 <Label htmlFor={`privacy-presentAddress`} className="font-medium">Present Address</Label>
                                 <div className="flex items-center space-x-2">
-                                    <Label htmlFor={`privacy-presentAddress-public`}>Public</Label>
+                                    <Label>Public</Label>
                                     <Switch id={`privacy-presentAddress`} defaultChecked />
-                                    <Label htmlFor={`privacy-presentAddress-consent`}>Consent</Label>
+                                    <Label>Consent</Label>
                                 </div>
                             </div>
                         </CardContent>
@@ -337,51 +402,23 @@ export default function RegisterPage() {
                             <div className="flex items-center justify-between">
                                 <Label htmlFor={`privacy-permanentAddress`} className="font-medium">Permanent Address</Label>
                                 <div className="flex items-center space-x-2">
-                                    <Label htmlFor={`privacy-permanentAddress-public`}>Public</Label>
+                                    <Label>Public</Label>
                                     <Switch id={`privacy-permanentAddress`} defaultChecked />
-                                    <Label htmlFor={`privacy-permanentAddress-consent`}>Consent</Label>
+                                    <Label>Consent</Label>
                                 </div>
                             </div>
                         </CardContent>
                     </Card>
                   )}
-                  {!!phoneValue && (
+                   {!!phoneValue && (
                      <Card className="p-4">
                         <CardContent className="p-0">
                             <div className="flex items-center justify-between">
                                 <Label htmlFor={`privacy-phone`} className="font-medium">Phone Number</Label>
                                 <div className="flex items-center space-x-2">
-                                    <Label htmlFor={`privacy-phone-public`}>Public</Label>
+                                    <Label>Public</Label>
                                     <Switch id={`privacy-phone`} defaultChecked />
-                                    <Label htmlFor={`privacy-phone-consent`}>Consent</Label>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                  )}
-                  {!!professionValue && (
-                     <Card className="p-4">
-                        <CardContent className="p-0">
-                            <div className="flex items-center justify-between">
-                                <Label htmlFor={`privacy-profession`} className="font-medium">Profession</Label>
-                                <div className="flex items-center space-x-2">
-                                    <Label htmlFor={`privacy-profession-public`}>Public</Label>
-                                    <Switch id={`privacy-profession`} defaultChecked />
-                                    <Label htmlFor={`privacy-profession-consent`}>Consent</Label>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                  )}
-                   {!!companyValue && (
-                     <Card className="p-4">
-                        <CardContent className="p-0">
-                            <div className="flex items-center justify-between">
-                                <Label htmlFor={`privacy-company`} className="font-medium">Company / Organization</Label>
-                                <div className="flex items-center space-x-2">
-                                    <Label htmlFor={`privacy-company-public`}>Public</Label>
-                                    <Switch id={`privacy-company`} defaultChecked />
-                                    <Label htmlFor={`privacy-company-consent`}>Consent</Label>
+                                    <Label>Consent</Label>
                                 </div>
                             </div>
                         </CardContent>
@@ -393,9 +430,9 @@ export default function RegisterPage() {
                             <div className="flex items-center justify-between">
                                 <Label htmlFor={`privacy-spouseDetails`} className="font-medium">Spouse Details</Label>
                                 <div className="flex items-center space-x-2">
-                                    <Label htmlFor={`privacy-spouseDetails-public`}>Public</Label>
+                                    <Label>Public</Label>
                                     <Switch id={`privacy-spouseDetails`} defaultChecked />
-                                    <Label htmlFor={`privacy-spouseDetails-consent`}>Consent</Label>
+                                    <Label>Consent</Label>
                                 </div>
                             </div>
                         </CardContent>
@@ -407,9 +444,37 @@ export default function RegisterPage() {
                             <div className="flex items-center justify-between">
                                 <Label htmlFor={`privacy-childrenDetails`} className="font-medium">Children Details</Label>
                                 <div className="flex items-center space-x-2">
-                                    <Label htmlFor={`privacy-childrenDetails-public`}>Public</Label>
+                                    <Label>Public</Label>
                                     <Switch id={`privacy-childrenDetails`} defaultChecked />
-                                    <Label htmlFor={`privacy-childrenDetails-consent`}>Consent</Label>
+                                    <Label>Consent</Label>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                  )}
+                  {!!professionValue && (
+                     <Card className="p-4">
+                        <CardContent className="p-0">
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor={`privacy-profession`} className="font-medium">Profession</Label>
+                                <div className="flex items-center space-x-2">
+                                    <Label>Public</Label>
+                                    <Switch id={`privacy-profession`} defaultChecked />
+                                    <Label>Consent</Label>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                  )}
+                   {!!companyValue && (
+                     <Card className="p-4">
+                        <CardContent className="p-0">
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor={`privacy-company`} className="font-medium">Company / Organization</Label>
+                                <div className="flex items-center space-x-2">
+                                    <Label>Public</Label>
+                                    <Switch id={`privacy-company`} defaultChecked />
+                                    <Label>Consent</Label>
                                 </div>
                             </div>
                         </CardContent>
@@ -420,7 +485,7 @@ export default function RegisterPage() {
               </AccordionItem>
             </Accordion>
             
-            <Button type="submit" className="w-full" size="lg">Submit for Approval</Button>
+            <Button type="submit" className="w-full" size="lg" disabled={!isOtpVerified || !isValid}>Submit for Approval</Button>
           </form>
         </Form>
       </div>
