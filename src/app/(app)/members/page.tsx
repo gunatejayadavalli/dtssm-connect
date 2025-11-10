@@ -6,31 +6,25 @@ import { useState, useEffect, useMemo } from 'react';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { mockUsers } from '@/lib/data';
 import type { User } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 
 const MemberCard = ({ user }: { user: User }) => (
-  <Card className={cn("transition-colors", user.roles.isAdmin ? "border-primary" : "hover:border-primary")}>
-    <Link href={`/members/${user.id}`} className="flex flex-col h-full">
-        <CardHeader className="flex flex-row items-center gap-4">
+  <Card className={cn("transition-colors hover:shadow-lg", user.roles.isAdmin ? "border-primary" : "hover:border-primary/50")}>
+    <Link href={`/members/${user.id}`} className="block h-full">
+        <CardContent className="p-4 flex items-center gap-4">
             <Avatar className="h-16 w-16">
                 <AvatarImage src={user.profilePhotoUrl} alt={user.name} data-ai-hint="profile avatar" />
                 <AvatarFallback>{user.name.slice(0, 2).toUpperCase()}</AvatarFallback>
             </Avatar>
-            <div>
-                <h3 className="text-lg font-semibold font-headline">{user.name}</h3>
+            <div className="flex-1">
+                <h3 className="text-lg font-semibold font-headline leading-tight">{user.name}</h3>
                 {user.profession && <p className="text-sm text-muted-foreground">{user.profession}</p>}
                 <p className="text-sm text-muted-foreground">{user.city}</p>
-            </div>
-        </CardHeader>
-        <CardContent className="flex-grow flex items-end">
-            <div className="flex flex-wrap gap-2">
-                {/* Admin status is now indicated by border color */}
             </div>
         </CardContent>
     </Link>
