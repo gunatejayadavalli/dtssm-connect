@@ -11,10 +11,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { mockUsers } from '@/lib/data';
 import type { User } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
 
 const MemberCard = ({ user }: { user: User }) => (
-  <Card className="hover:border-primary transition-colors">
+  <Card className={cn("transition-colors", user.roles.isAdmin ? "border-primary" : "hover:border-primary")}>
     <Link href={`/members/${user.id}`} className="flex flex-col h-full">
         <CardHeader className="flex flex-row items-center gap-4">
             <Avatar className="h-16 w-16">
@@ -29,7 +30,7 @@ const MemberCard = ({ user }: { user: User }) => (
         </CardHeader>
         <CardContent className="flex-grow flex items-end">
             <div className="flex flex-wrap gap-2">
-                {user.roles.isAdmin && <Badge variant="destructive">Admin</Badge>}
+                {/* Admin status is now indicated by border color */}
             </div>
         </CardContent>
     </Link>
