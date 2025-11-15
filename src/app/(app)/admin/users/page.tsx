@@ -62,13 +62,13 @@ export default function UserManagementPage() {
                 View Member Details
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
             {!user.isApproved && (
                 <DropdownMenuItem onClick={() => handleApproveUser(user.id)}>
                     <UserCheck className="mr-2 h-4 w-4" />
                     Approve User
                 </DropdownMenuItem>
             )}
-            <DropdownMenuSeparator />
             {!user.roles.isAdmin && (
                 <DropdownMenuItem onClick={() => handleRoleChange(user.id, true)}>
                     <Shield className="mr-2 h-4 w-4" />
