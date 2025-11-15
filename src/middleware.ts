@@ -5,14 +5,17 @@ export function middleware(request: NextRequest) {
   const authToken = request.cookies.get('auth_token');
   const { pathname } = request.nextUrl;
  
-  // Allow requests for static files, API routes, and public pages to pass through
+  const isPublicPage = [
+    '/login',
+    '/register',
+    '/awaiting-approval'
+  ].includes(pathname);
+
+  // Allow requests for static files, API routes, and special Next.js paths
   if (
     pathname.startsWith('/_next/') ||
     pathname.startsWith('/api/') ||
     pathname.startsWith('/static/') ||
-    pathname === '/login' ||
-    pathname === '/register' ||
-    pathname === '/awaiting-approval' ||
     pathname.endsWith('.ico') ||
     pathname.endsWith('.png') ||
     pathname.endsWith('.svg')
@@ -20,16 +23,22 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
  
-  if (!authToken) {
-    // Redirect to login if no auth token is found and the page is not public
+  // If user is authenticated
+  if (authToken) {
+    // And they are trying to access a public page (like /login), redirect them to /home
+    if (isPublicPage) {
+      return NextResponse.redirect(new URL('/home', request.url));
+    }
+    // Otherwise, let them proceed
+    return NextResponse.next();
+  }
+ 
+  // If user is not authenticated and not on a public page, redirect to login
+  if (!authToken && !isPublicPage) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
  
-  // If the user is authenticated and trying to access login/register, redirect to home
-  if (authToken && (pathname === '/login' || pathname === '/register')) {
-     return NextResponse.redirect(new URL('/home', request.url));
-  }
- 
+  // If user is not authenticated but is on a public page, let them proceed
   return NextResponse.next();
 }
  
