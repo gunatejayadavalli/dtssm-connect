@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Settings, User as UserIcon, LogOut } from 'lucide-react';
+import { Settings, User as UserIcon, LogOut, Shield } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,6 +43,14 @@ export default function UserNav() {
                 <span>My Profile</span>
             </Link>
           </DropdownMenuItem>
+          {user.roles.isAdmin && (
+            <DropdownMenuItem asChild>
+                <Link href="/admin/users">
+                    <Shield className="mr-2 h-4 w-4" />
+                    <span>User Management</span>
+                </Link>
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem asChild>
             <Link href="/settings">
               <Settings className="mr-2 h-4 w-4" />

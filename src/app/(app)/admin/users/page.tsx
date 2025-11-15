@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { mockUsers } from '@/lib/data';
 import type { User } from '@/lib/types';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -35,6 +35,41 @@ export default function UserManagementPage() {
       description: `The user has been ${status}.`,
     });
   };
+  
+  const UserActions = ({ user }: { user: User }) => (
+    <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon">
+                <MoreHorizontal className="h-4 w-4" />
+            </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+            {!user.roles.isAdmin && (
+                <DropdownMenuItem onClick={() => handleRoleChange(user.id, true)}>
+                    <Shield className="mr-2 h-4 w-4" />
+                    Make Admin
+                </DropdownMenuItem>
+            )}
+            {user.roles.isAdmin && (
+                <DropdownMenuItem onClick={() => handleRoleChange(user.id, false)}>
+                    <UserIcon className="mr-2 h-4 w-4" />
+                    Make User
+                </DropdownMenuItem>
+            )}
+            {user.status === 'active' ? (
+                <DropdownMenuItem className="text-destructive" onClick={() => handleStatusChange(user.id, 'blocked')}>
+                    <XCircle className="mr-2 h-4 w-4" />
+                    Block User
+                </DropdownMenuItem>
+            ) : (
+                <DropdownMenuItem onClick={() => handleStatusChange(user.id, 'active')}>
+                    <UserIcon className="mr-2 h-4 w-4" />
+                    Unblock User
+                </DropdownMenuItem>
+            )}
+        </DropdownMenuContent>
+    </DropdownMenu>
+  );
 
   return (
     <div className="space-y-6">
@@ -43,7 +78,8 @@ export default function UserManagementPage() {
         <p className="text-muted-foreground">Manage roles and status of all registered users.</p>
       </div>
 
-      <Card>
+      {/* Desktop Table View */}
+      <Card className="hidden md:block">
         <CardContent className="p-0">
           <Table>
             <TableHeader>
@@ -71,38 +107,7 @@ export default function UserManagementPage() {
                   </TableCell>
                   <TableCell>{user.phone}</TableCell>
                   <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        {!user.roles.isAdmin && (
-                          <DropdownMenuItem onClick={() => handleRoleChange(user.id, true)}>
-                            <Shield className="mr-2 h-4 w-4" />
-                            Make Admin
-                          </DropdownMenuItem>
-                        )}
-                        {user.roles.isAdmin && (
-                           <DropdownMenuItem onClick={() => handleRoleChange(user.id, false)}>
-                             <UserIcon className="mr-2 h-4 w-4" />
-                             Make User
-                           </DropdownMenuItem>
-                        )}
-                        {user.status === 'active' ? (
-                          <DropdownMenuItem className="text-destructive" onClick={() => handleStatusChange(user.id, 'blocked')}>
-                             <XCircle className="mr-2 h-4 w-4" />
-                            Block User
-                          </DropdownMenuItem>
-                        ) : (
-                          <DropdownMenuItem onClick={() => handleStatusChange(user.id, 'active')}>
-                             <UserIcon className="mr-2 h-4 w-4" />
-                            Unblock User
-                          </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <UserActions user={user} />
                   </TableCell>
                 </TableRow>
               ))}
@@ -110,6 +115,37 @@ export default function UserManagementPage() {
           </Table>
         </CardContent>
       </Card>
+      
+      {/* Mobile Card View */}
+      <div className="space-y-4 md:hidden">
+          {users.map(user => (
+              <Card key={user.id}>
+                  <CardHeader>
+                      <div className="flex justify-between items-start">
+                          <div>
+                              <CardTitle>{user.name}</CardTitle>
+                              <CardDescription>{user.phone}</CardDescription>
+                          </div>
+                          <UserActions user={user} />
+                      </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                      <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium">Role</span>
+                          <Badge variant={user.roles.isAdmin ? 'destructive' : 'secondary'}>
+                              {user.roles.isAdmin ? 'Admin' : 'User'}
+                          </Badge>
+                      </div>
+                      <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium">Status</span>
+                          <Badge variant={user.status === 'active' ? 'default' : 'outline'} className={cn(user.status === 'active' ? 'bg-green-500/20 text-green-700 border-green-400' : 'bg-red-500/20 text-red-700 border-red-400')}>
+                              {user.status}
+                          </Badge>
+                      </div>
+                  </CardContent>
+              </Card>
+          ))}
+      </div>
     </div>
   );
 }

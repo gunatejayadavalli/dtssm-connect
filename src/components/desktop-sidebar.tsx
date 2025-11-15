@@ -26,7 +26,16 @@ export default function DesktopSidebar({ isMobile = false }: { isMobile?: boolea
     setLoggedInUser(user);
   }, []);
 
-  const visibleNavItems = navItems.filter(item => !item.adminOnly || (item.adminOnly && loggedInUser?.roles.isAdmin));
+  const getVisibleNavItems = () => {
+    let items = navItems;
+    // On mobile, the admin link is in the user nav, not here.
+    if (isMobile) {
+        items = items.filter(item => item.href !== '/admin/users');
+    }
+    return items.filter(item => !item.adminOnly || (item.adminOnly && loggedInUser?.roles.isAdmin));
+  }
+
+  const visibleNavItems = getVisibleNavItems();
 
   return (
     <div
