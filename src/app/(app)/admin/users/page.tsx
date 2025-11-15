@@ -7,10 +7,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal, Shield, User as UserIcon, XCircle } from 'lucide-react';
+import { MoreHorizontal, Shield, User as UserIcon, XCircle, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Badge } from '@/components/ui/badge';
 
 export default function UserManagementPage() {
   const [users, setUsers] = useState<User[]>(mockUsers);
@@ -64,7 +64,7 @@ export default function UserManagementPage() {
                 </DropdownMenuItem>
             ) : (
                 <DropdownMenuItem onClick={() => handleStatusChange(user.id, 'active')}>
-                    <UserIcon className="mr-2 h-4 w-4" />
+                    <CheckCircle className="mr-2 h-4 w-4" />
                     Unblock User
                 </DropdownMenuItem>
             )}
@@ -100,6 +100,7 @@ export default function UserManagementPage() {
                      <div className="flex items-center gap-2">
                         {user.roles.isAdmin ? <Shield className="h-5 w-5 text-destructive" /> : <UserIcon className="h-5 w-5 text-muted-foreground" />}
                         <span>{user.name}</span>
+                        {user.status === 'blocked' && <XCircle className="h-4 w-4 text-destructive" />}
                      </div>
                   </TableCell>
                   <TableCell>{user.phone}</TableCell>
@@ -133,9 +134,17 @@ export default function UserManagementPage() {
                       </div>
                   </CardHeader>
                   <CardContent>
-                     <div className="text-sm">
-                        Status: <span className={cn('font-medium', user.status === 'blocked' ? 'text-destructive' : 'text-green-600')}>{user.status === 'blocked' ? 'Blocked' : 'Active'}</span>
-                     </div>
+                     {user.status === 'blocked' ? (
+                        <Badge variant="destructive" className="flex items-center gap-1 w-fit">
+                            <XCircle className="h-3 w-3" />
+                            Blocked
+                        </Badge>
+                     ) : (
+                        <Badge className="bg-green-600 hover:bg-green-700 flex items-center gap-1 w-fit">
+                            <CheckCircle className="h-3 w-3" />
+                            Active
+                        </Badge>
+                     )}
                   </CardContent>
               </Card>
           ))}
