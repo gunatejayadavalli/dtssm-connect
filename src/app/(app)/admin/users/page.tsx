@@ -5,7 +5,6 @@ import { mockUsers } from '@/lib/data';
 import type { User } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal, Shield, User as UserIcon, XCircle } from 'lucide-react';
@@ -42,6 +41,7 @@ export default function UserManagementPage() {
         <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">
                 <MoreHorizontal className="h-4 w-4" />
+                <span className="sr-only">User Actions</span>
             </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -72,30 +72,6 @@ export default function UserManagementPage() {
     </DropdownMenu>
   );
 
-  const RoleDisplay = ({ user }: { user: User }) => (
-    <div className="flex items-center gap-2">
-      {user.roles.isAdmin ? <Shield className="h-5 w-5 text-destructive" /> : <UserIcon className="h-5 w-5 text-muted-foreground" />}
-      <span className="capitalize">{user.roles.isAdmin ? 'Admin' : 'User'}</span>
-    </div>
-  );
-
-  const StatusDisplay = ({ user }: { user: User }) => (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger>
-          <div className="flex items-center gap-2">
-            <span className={cn("h-3 w-3 rounded-full", user.status === 'active' ? 'bg-green-500' : 'bg-red-500')}></span>
-            <span className="capitalize md:hidden">{user.status}</span>
-          </div>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p className="capitalize">{user.status}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
-
-
   return (
     <div className="space-y-6">
       <div>
@@ -110,21 +86,21 @@ export default function UserManagementPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>User</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
                 <TableHead>Phone</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {users.map(user => (
-                <TableRow key={user.id}>
-                  <TableCell className="font-medium">{user.name}</TableCell>
-                  <TableCell>
-                    <RoleDisplay user={user} />
-                  </TableCell>
-                  <TableCell>
-                    <StatusDisplay user={user} />
+                <TableRow 
+                  key={user.id}
+                  className={cn(user.status === 'blocked' && 'bg-destructive/10 hover:bg-destructive/20')}
+                >
+                  <TableCell className="font-medium">
+                     <div className="flex items-center gap-2">
+                        {user.roles.isAdmin ? <Shield className="h-5 w-5 text-destructive" /> : <UserIcon className="h-5 w-5 text-muted-foreground" />}
+                        <span>{user.name}</span>
+                     </div>
                   </TableCell>
                   <TableCell>{user.phone}</TableCell>
                   <TableCell className="text-right">
@@ -140,25 +116,26 @@ export default function UserManagementPage() {
       {/* Mobile Card View */}
       <div className="space-y-4 md:hidden">
           {users.map(user => (
-              <Card key={user.id}>
+              <Card 
+                key={user.id}
+                className={cn(user.status === 'blocked' && 'bg-destructive/10 border-destructive/20')}
+              >
                   <CardHeader>
                       <div className="flex justify-between items-start">
                           <div>
-                              <CardTitle>{user.name}</CardTitle>
+                              <CardTitle className="flex items-center gap-2">
+                                {user.roles.isAdmin ? <Shield className="h-5 w-5 text-destructive" /> : <UserIcon className="h-5 w-5 text-muted-foreground" />}
+                                {user.name}
+                              </CardTitle>
                               <CardDescription>{user.phone}</CardDescription>
                           </div>
                           <UserActions user={user} />
                       </div>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                      <div className="flex justify-between items-center">
-                          <span className="text-sm font-medium">Role</span>
-                          <RoleDisplay user={user} />
-                      </div>
-                      <div className="flex justify-between items-center">
-                          <span className="text-sm font-medium">Status</span>
-                          <StatusDisplay user={user} />
-                      </div>
+                  <CardContent>
+                     <div className="text-sm">
+                        Status: <span className={cn('font-medium', user.status === 'blocked' ? 'text-destructive' : 'text-green-600')}>{user.status === 'blocked' ? 'Blocked' : 'Active'}</span>
+                     </div>
                   </CardContent>
               </Card>
           ))}
