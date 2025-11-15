@@ -121,7 +121,6 @@ export default function MemberDetailPage() {
                     Approve User
                 </DropdownMenuItem>
             )}
-            <DropdownMenuSeparator />
             {user.isApproved && !user.roles.isAdmin && (
                 <DropdownMenuItem onClick={() => handleRoleChange(true)}>
                     <Shield className="mr-2 h-4 w-4" />
