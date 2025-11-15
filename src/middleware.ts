@@ -11,10 +11,10 @@ export function middleware(request: NextRequest) {
     '/awaiting-approval'
   ].includes(pathname);
 
-  // Allow requests for static files, API routes, and special Next.js paths
+  // Allow requests for API routes and special Next.js paths to pass through
   if (
-    pathname.startsWith('/_next/') ||
     pathname.startsWith('/api/') ||
+    pathname.startsWith('/_next/') ||
     pathname.startsWith('/static/') ||
     pathname.endsWith('.ico') ||
     pathname.endsWith('.png') ||
@@ -25,7 +25,7 @@ export function middleware(request: NextRequest) {
  
   // If user is authenticated
   if (authToken) {
-    // And they are trying to access a public page (like /login), redirect them to /home
+    // And they are trying to access a public page, redirect them to /home
     if (isPublicPage) {
       return NextResponse.redirect(new URL('/home', request.url));
     }

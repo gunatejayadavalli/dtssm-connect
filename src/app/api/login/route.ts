@@ -1,12 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { mockUsers } from '@/lib/data';
 import type { User } from '@/lib/types';
-
-// This function is no longer used for login but might be useful elsewhere.
-const getMemberByPhone = (phone: string): User | undefined => {
-    return mockUsers.find(user => user.phone === phone);
-}
 
 export async function POST(request: Request) {
   const { phone } = await request.json();
@@ -19,8 +13,8 @@ export async function POST(request: Request) {
   }
   
   // For this mock implementation, we accept any 10-digit number and log the user in.
-  // In a real app, you would verify the phone number and OTP here.
-  const user = getMemberByPhone(phone) || { id: 'usr_mock', name: 'Test User', phone };
+  // In a real app, you would verify the phone number here.
+  const user = { id: 'usr_mock', name: 'Test User', phone };
 
   const cookieStore = cookies();
   

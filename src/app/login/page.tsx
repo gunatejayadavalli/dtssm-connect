@@ -43,8 +43,8 @@ export default function LoginPage() {
           title: "Login Successful",
           description: "You are now being redirected.",
         });
-        router.push('/home');
-        router.refresh(); // Ensures the page reloads and middleware runs
+        // Force a full page reload to ensure middleware gets the cookie
+        window.location.href = '/home';
       } else {
         throw new Error(data.message || 'Login failed');
       }
