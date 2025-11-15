@@ -85,8 +85,8 @@ export default function UserManagementPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>User</TableHead>
-                <TableHead>Phone</TableHead>
+                <TableHead className="text-center">User</TableHead>
+                <TableHead className="text-center">Phone</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -102,7 +102,7 @@ export default function UserManagementPage() {
                         <span>{user.name}</span>
                      </div>
                   </TableCell>
-                  <TableCell>{user.phone}</TableCell>
+                  <TableCell className="text-center">{user.phone}</TableCell>
                   <TableCell className="text-right">
                     <UserActions user={user} />
                   </TableCell>
