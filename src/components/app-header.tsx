@@ -17,7 +17,7 @@ export default function AppHeader() {
               <span className="sr-only">Toggle navigation menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="p-0">
+          <SheetContent side="left" className="p-0 flex flex-col">
             {/* We can re-use the DesktopSidebar component for the mobile sheet content */}
             <DesktopSidebar isMobile />
           </SheetContent>

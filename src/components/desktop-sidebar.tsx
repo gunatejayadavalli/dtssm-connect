@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import type { NavItem, User } from '@/lib/types';
 import { mockUsers } from '@/lib/data';
 import { useEffect, useState } from 'react';
+import { SheetHeader, SheetTitle } from './ui/sheet';
 
 const navItems: NavItem[] = [
   { href: '/home', label: 'Home', icon: LayoutGrid },
@@ -40,16 +41,26 @@ export default function DesktopSidebar({ isMobile = false }: { isMobile?: boolea
   return (
     <div
       className={cn(
-        'h-full bg-card text-card-foreground border-r',
-        isMobile ? 'flex flex-col' : 'hidden md:flex md:flex-col md:fixed md:w-64'
+        'h-full bg-card text-card-foreground',
+        isMobile ? 'flex flex-col' : 'hidden md:flex md:flex-col md:fixed md:w-64 border-r'
       )}
     >
-      <div className="flex h-16 items-center border-b px-6">
-        <Link href="/home" className="flex items-center gap-2 font-semibold">
-          <AtSign className="h-6 w-6 text-primary" />
-          <span className="font-headline text-xl">DTSSM Connect</span>
-        </Link>
-      </div>
+      {isMobile ? (
+        <SheetHeader className="p-4 border-b">
+           <SheetTitle className="sr-only">Main Menu</SheetTitle>
+           <Link href="/home" className="flex items-center gap-2 font-semibold text-left">
+              <AtSign className="h-6 w-6 text-primary" />
+              <span className="font-headline text-xl">DTSSM Connect</span>
+            </Link>
+        </SheetHeader>
+      ) : (
+        <div className="flex h-16 items-center border-b px-6">
+            <Link href="/home" className="flex items-center gap-2 font-semibold">
+            <AtSign className="h-6 w-6 text-primary" />
+            <span className="font-headline text-xl">DTSSM Connect</span>
+            </Link>
+        </div>
+      )}
       <nav className="flex-1 space-y-2 p-4">
         {visibleNavItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== '/home' && pathname.startsWith(item.href));
