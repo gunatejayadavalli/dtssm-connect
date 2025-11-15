@@ -1,6 +1,6 @@
 'use client';
 
-import { notFound, useSearchParams } from 'next/navigation';
+import { notFound, useSearchParams, useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   User,
@@ -42,8 +42,9 @@ const DetailItem = ({ icon: Icon, label, value, isPrivate = false }: { icon: Rea
     );
 };
 
-export default function MemberDetailPage({ params }: { params: { id: string } }) {
+export default function MemberDetailPage() {
   const searchParams = useSearchParams();
+  const params = useParams<{ id: string }>();
   const from = searchParams.get('from');
 
   const user = getMemberById(params.id);

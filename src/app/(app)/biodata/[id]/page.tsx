@@ -1,4 +1,6 @@
-import { notFound } from 'next/navigation';
+
+'use client';
+import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -43,7 +45,8 @@ const DetailItem = ({ icon: Icon, label, value, isPrivate = false }: { icon: Rea
     );
 };
 
-export default function BiodataDetailPage({ params }: { params: { id: string } }) {
+export default function BiodataDetailPage() {
+  const params = useParams<{ id: string }>();
   const biodata = getBiodataById(params.id);
 
   if (!biodata) {

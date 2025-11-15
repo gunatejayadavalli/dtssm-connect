@@ -1,4 +1,6 @@
-import { notFound } from 'next/navigation';
+
+'use client';
+import { notFound, useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   Calendar,
@@ -28,7 +30,8 @@ const formatFullDateTime = (date: Date) => {
     return format(date, hasTime ? 'PPP p' : 'PPP');
 };
 
-export default function EventDetailPage({ params }: { params: { id: string } }) {
+export default function EventDetailPage() {
+  const params = useParams<{ id: string }>();
   const event = mockEvents.find(e => e.id === params.id);
   const loggedInUser = mockUsers.find(u => u.roles.isAdmin) || mockUsers[0]; // Mock logged in user
 
