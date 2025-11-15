@@ -33,24 +33,26 @@ export default function LoginPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        // In a real app, you might send the phone number
         body: JSON.stringify({ phone }),
       });
+
+      const data = await response.json();
 
       if (response.ok) {
         toast({
           title: "Login Successful",
-          description: "You are now logged in.",
+          description: "You are now being redirected.",
         });
         router.push('/home');
+        router.refresh(); // Ensures the page reloads and middleware runs
       } else {
-        throw new Error('Login failed');
+        throw new Error(data.message || 'Login failed');
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         variant: 'destructive',
         title: 'Uh oh! Something went wrong.',
-        description: 'Could not log in. Please try again.',
+        description: error.message || 'Could not log in. Please try again.',
       });
     } finally {
       setIsLoading(false);
@@ -78,7 +80,7 @@ export default function LoginPage() {
                 <Input 
                   id="phone" 
                   type="tel" 
-                  placeholder="98765 43210" 
+                  placeholder="10-digit number" 
                   required 
                   className="pl-10" 
                   value={phone}
@@ -86,15 +88,8 @@ export default function LoginPage() {
                 />
               </div>
             </div>
-            {/* The OTP field can be conditionally shown after OTP is sent */}
-            {/* 
-            <div className="space-y-2">
-              <Label htmlFor="otp">OTP</Label>
-              <Input id="otp" type="text" placeholder="Enter 6-digit OTP" />
-            </div> 
-            */}
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Sending OTP...' : 'Send OTP'}
+              {isLoading ? 'Logging in...' : 'Login'}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">

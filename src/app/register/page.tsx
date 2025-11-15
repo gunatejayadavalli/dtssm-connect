@@ -43,6 +43,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -68,11 +69,8 @@ type FormSchemaType = z.infer<typeof formSchema>;
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [openAccordions, setOpenAccordions] = useState<string[]>(['basic-info']);
-  const [isOtpSent, setIsOtpSent] = useState(false);
-  const [isOtpVerified, setIsOtpVerified] = useState(false);
-  const [otp, setOtp] = useState('');
-  const [resendTimer, setResendTimer] = useState(0);
   
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
@@ -106,44 +104,6 @@ export default function RegisterPage() {
   
   const showFamilyDetails = maritalStatus && ['Married', 'Widowed', 'Divorced'].includes(maritalStatus);
 
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (resendTimer > 0) {
-      timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
-    }
-    return () => clearTimeout(timer);
-  }, [resendTimer]);
-
-  const handleSendOtp = () => {
-    // Basic validation before sending OTP
-    if (phoneValue.length !== 10) {
-      form.setError("phone", { type: "manual", message: "Please enter a valid 10-digit phone number." });
-      return;
-    }
-    // In a real app, this would trigger an API call to send OTP
-    console.log(`Sending OTP to ${phoneValue}`);
-    setIsOtpSent(true);
-    setResendTimer(30); // 30 second timer
-  };
-
-  const handleVerifyOtp = () => {
-    // In a real app, this would verify OTP via an API call
-    if (otp === '123456') { // Mock OTP
-      console.log('OTP Verified');
-      setIsOtpVerified(true);
-      setOtp('');
-      setIsOtpSent(false); // Hide OTP fields after verification
-    } else {
-      alert('Invalid OTP. Please try again.');
-    }
-  };
-
-  const handleResendOtp = () => {
-    if (resendTimer === 0) {
-      handleSendOtp();
-    }
-  };
-
   const accordionFields: Record<string, (keyof FormSchemaType)[]> = {
     'basic-info': ['name', 'dob', 'gender', 'phone'],
     'address-info': ['city'],
@@ -160,11 +120,11 @@ export default function RegisterPage() {
   };
 
   function onSubmit(values: FormSchemaType) {
-    if (!isOtpVerified) {
-      alert("Please verify your phone number before submitting.");
-      return;
-    }
     console.log(values);
+    toast({
+        title: "Registration Submitted",
+        description: "Your profile has been submitted for admin approval.",
+    });
     // On success, redirect to awaiting approval
     router.push('/awaiting-approval');
   }
@@ -226,36 +186,12 @@ export default function RegisterPage() {
                   <FormField control={form.control} name="phone" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Phone Number (for login) *</FormLabel>
-                       <div className="flex items-center gap-2">
-                        <FormControl>
-                          <Input type="tel" placeholder="Your 10-digit mobile number" {...field} disabled={isOtpVerified || isOtpSent} />
-                        </FormControl>
-                        {!isOtpSent && !isOtpVerified && (
-                          <Button type="button" onClick={handleSendOtp}>Send OTP</Button>
-                        )}
-                        {isOtpVerified && (
-                           <div className="text-sm font-medium text-green-600">Verified</div>
-                        )}
-                      </div>
+                       <FormControl>
+                        <Input type="tel" placeholder="Your 10-digit mobile number" {...field} />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
-
-                  {isOtpSent && !isOtpVerified && (
-                     <div className="space-y-2">
-                        <Label htmlFor="otp">Enter OTP</Label>
-                        <div className="flex items-center gap-2">
-                            <Input id="otp" value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="6-digit OTP" />
-                            <Button type="button" onClick={handleVerifyOtp}>Verify OTP</Button>
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                            <button type="button" onClick={handleResendOtp} disabled={resendTimer > 0} className="text-primary disabled:text-muted-foreground disabled:cursor-not-allowed">
-                                Resend OTP {resendTimer > 0 ? `in ${resendTimer}s` : ''}
-                            </button>
-                        </p>
-                    </div>
-                  )}
-
                 </AccordionContent>
               </AccordionItem>
               
@@ -502,7 +438,7 @@ export default function RegisterPage() {
               </AccordionItem>
             </Accordion>
             
-            <Button type="submit" className="w-full" size="lg" disabled={!isOtpVerified || !isValid}>Submit for Approval</Button>
+            <Button type="submit" className="w-full" size="lg" disabled={!isValid}>Submit for Approval</Button>
           </form>
         </Form>
       </div>
