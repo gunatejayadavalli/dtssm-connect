@@ -69,7 +69,7 @@ export default function UserManagementPage() {
                     Approve User
                 </DropdownMenuItem>
             )}
-            {!user.roles.isAdmin && (
+            {user.isApproved && !user.roles.isAdmin && (
                 <DropdownMenuItem onClick={() => handleRoleChange(user.id, true)}>
                     <Shield className="mr-2 h-4 w-4" />
                     Make Admin
