@@ -72,7 +72,7 @@ export const mockUsers: User[] = [
     maritalStatus: 'Married',
     spouseDetails: 'Admin Spouse',
     childrenDetails: 'One child',
-    dob: new date('1985-02-10'),
+    dob: new Date('1985-02-10'),
     gender: 'Female',
     phone: '9999999999',
     isApproved: true,
