@@ -1,16 +1,16 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 import { mockUsers } from '@/lib/data';
 import type { User } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal, Shield, User as UserIcon, XCircle, CheckCircle } from 'lucide-react';
+import { MoreHorizontal, Shield, User as UserIcon, XCircle, CheckCircle, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
 
 export default function UserManagementPage() {
   const [users, setUsers] = useState<User[]>(mockUsers);
@@ -45,6 +45,13 @@ export default function UserManagementPage() {
             </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+            <DropdownMenuItem asChild>
+              <Link href={`/members/${user.id}`}>
+                <Eye className="mr-2 h-4 w-4" />
+                View Member Details
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             {!user.roles.isAdmin && (
                 <DropdownMenuItem onClick={() => handleRoleChange(user.id, true)}>
                     <Shield className="mr-2 h-4 w-4" />
