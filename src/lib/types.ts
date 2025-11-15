@@ -18,6 +18,7 @@ export type User = {
   phone: string;
   profilePhotoUrl?: string;
   isApproved: boolean;
+  status: 'active' | 'blocked';
   registeredBy?: string;
   roles: {
     isAdmin: boolean;
@@ -66,4 +67,5 @@ export type NavItem = {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   active?: boolean;
+  adminOnly?: boolean;
 };

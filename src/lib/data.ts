@@ -13,6 +13,7 @@ export const mockUsers: User[] = [
     gender: 'Male',
     phone: '9876543210',
     isApproved: true,
+    status: 'active',
     roles: { isAdmin: false },
     visibility: {
       phone: 'consent-based',
@@ -33,6 +34,7 @@ export const mockUsers: User[] = [
     gender: 'Female',
     phone: '9876543211',
     isApproved: true,
+    status: 'active',
     registeredBy: 'usr_4',
     roles: { isAdmin: false },
      visibility: {
@@ -52,6 +54,7 @@ export const mockUsers: User[] = [
     gender: 'Male',
     phone: '9876543212',
     isApproved: false,
+    status: 'active',
     registeredBy: 'usr_1',
     roles: { isAdmin: false },
      visibility: {
@@ -69,10 +72,11 @@ export const mockUsers: User[] = [
     maritalStatus: 'Married',
     spouseDetails: 'Admin Spouse',
     childrenDetails: 'One child',
-    dob: new Date('1985-02-10'),
+    dob: new date('1985-02-10'),
     gender: 'Female',
     phone: '9999999999',
     isApproved: true,
+    status: 'active',
     registeredBy: 'usr_4',
     roles: { isAdmin: true },
     visibility: {
@@ -142,7 +146,6 @@ export let mockEvents: CommunityEvent[] = [
         id: 'evt_2',
         title: 'Ugadi Celebrations 2024',
         dateFrom: new Date('2024-04-09T18:00:00'),
-        dateTo: new Date('2024-04-09T18:00:00'),
         venue: 'Community Hall, Main Street',
         description: 'Celebrate the Telugu New Year with traditional festivities, cultural programs, and a special Ugadi Pachadi feast.',
     },

@@ -2,19 +2,31 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { AtSign, LayoutGrid, Users, BookUser, Calendar, User } from 'lucide-react';
+import { AtSign, LayoutGrid, Users, BookUser, Calendar, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { NavItem } from '@/lib/types';
+import type { NavItem, User } from '@/lib/types';
+import { mockUsers } from '@/lib/data';
+import { useEffect, useState } from 'react';
 
 const navItems: NavItem[] = [
   { href: '/home', label: 'Home', icon: LayoutGrid },
   { href: '/members', label: 'Members', icon: Users },
   { href: '/biodata', label: 'Biodata', icon: BookUser },
   { href: '/events', label: 'Events', icon: Calendar },
+  { href: '/admin/users', label: 'User Management', icon: Shield, adminOnly: true },
 ];
 
 export default function DesktopSidebar({ isMobile = false }: { isMobile?: boolean }) {
   const pathname = usePathname();
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    // In a real app, you'd get this from an auth context
+    const user = mockUsers.find(u => u.roles.isAdmin) || mockUsers[0];
+    setLoggedInUser(user);
+  }, []);
+
+  const visibleNavItems = navItems.filter(item => !item.adminOnly || (item.adminOnly && loggedInUser?.roles.isAdmin));
 
   return (
     <div
@@ -30,7 +42,7 @@ export default function DesktopSidebar({ isMobile = false }: { isMobile?: boolea
         </Link>
       </div>
       <nav className="flex-1 space-y-2 p-4">
-        {navItems.map((item) => {
+        {visibleNavItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== '/home' && pathname.startsWith(item.href));
           return (
             <Link
