@@ -127,7 +127,7 @@ export default function UserManagementPage() {
                                 {user.roles.isAdmin ? <Shield className="h-5 w-5 text-destructive" /> : <UserIcon className="h-5 w-5 text-muted-foreground" />}
                                 {user.name}
                               </CardTitle>
-                              <CardDescription>{user.phone}</CardDescription>
+                              <CardDescription className="mt-1">{user.phone}</CardDescription>
                           </div>
                           <UserActions user={user} />
                       </div>
