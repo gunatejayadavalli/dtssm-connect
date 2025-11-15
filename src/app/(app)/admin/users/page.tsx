@@ -100,7 +100,6 @@ export default function UserManagementPage() {
                      <div className="flex items-center gap-2">
                         {user.roles.isAdmin ? <Shield className="h-5 w-5 text-destructive" /> : <UserIcon className="h-5 w-5 text-muted-foreground" />}
                         <span>{user.name}</span>
-                        {user.status === 'blocked' && <XCircle className="h-4 w-4 text-destructive" />}
                      </div>
                   </TableCell>
                   <TableCell>{user.phone}</TableCell>
@@ -133,19 +132,6 @@ export default function UserManagementPage() {
                           <UserActions user={user} />
                       </div>
                   </CardHeader>
-                  <CardContent>
-                     {user.status === 'blocked' ? (
-                        <Badge variant="destructive" className="flex items-center gap-1 w-fit">
-                            <XCircle className="h-3 w-3" />
-                            Blocked
-                        </Badge>
-                     ) : (
-                        <Badge className="bg-green-600 hover:bg-green-700 flex items-center gap-1 w-fit">
-                            <CheckCircle className="h-3 w-3" />
-                            Active
-                        </Badge>
-                     )}
-                  </CardContent>
               </Card>
           ))}
       </div>
