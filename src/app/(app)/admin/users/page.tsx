@@ -85,7 +85,7 @@ export default function UserManagementPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="text-center">User</TableHead>
+                <TableHead>User</TableHead>
                 <TableHead className="text-center">Phone</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
