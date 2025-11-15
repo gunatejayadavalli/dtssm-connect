@@ -92,28 +92,24 @@ export default function HomePage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {quickNavItems.map(item => (
-          <Card
-            key={item.title}
-            className="hover:shadow-lg transition-shadow group flex flex-col bg-card"
-          >
-            <CardHeader className="flex-shrink-0">
-              <div className="flex justify-between items-start">
-                <div className="space-y-2">
-                  <item.icon className="h-8 w-8 text-primary" />
-                  <CardTitle className="font-headline min-h-[auto] sm:min-h-[56px]">{item.title}</CardTitle>
+          <Link href={item.href} key={item.title} className="group">
+            <Card className="hover:shadow-lg transition-shadow h-full flex flex-col bg-card">
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div className="space-y-2">
+                    <item.icon className="h-8 w-8 text-primary" />
+                    <CardTitle className="font-headline">{item.title}</CardTitle>
+                  </div>
+                  <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
                 </div>
-                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
-              </div>
-            </CardHeader>
-            <CardContent className="flex flex-col flex-grow">
-              <p className="text-sm text-muted-foreground flex-grow min-h-[auto] sm:min-h-[60px]">
-                {item.description}
-              </p>
-              <Button variant="link" className="p-0 h-auto mt-4 self-start" asChild>
-                <Link href={item.href}>Go to {item.title}</Link>
-              </Button>
-            </CardContent>
-          </Card>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  {item.description}
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
     </div>
