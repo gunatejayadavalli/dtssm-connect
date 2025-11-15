@@ -90,7 +90,7 @@ export default function HomePage() {
         </Alert>
       )}
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {quickNavItems.map(item => (
           <Card
             key={item.title}
@@ -100,13 +100,13 @@ export default function HomePage() {
               <div className="flex justify-between items-start">
                 <div className="space-y-2">
                   <item.icon className="h-8 w-8 text-primary" />
-                  <CardTitle className="font-headline min-h-[56px]">{item.title}</CardTitle>
+                  <CardTitle className="font-headline min-h-[auto] sm:min-h-[56px]">{item.title}</CardTitle>
                 </div>
                 <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
               </div>
             </CardHeader>
             <CardContent className="flex flex-col flex-grow">
-              <p className="text-sm text-muted-foreground flex-grow min-h-[60px]">
+              <p className="text-sm text-muted-foreground flex-grow min-h-[auto] sm:min-h-[60px]">
                 {item.description}
               </p>
               <Button variant="link" className="p-0 h-auto mt-4 self-start" asChild>
