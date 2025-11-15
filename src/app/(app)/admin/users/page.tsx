@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { MoreHorizontal, Shield, User as UserIcon, XCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export default function UserManagementPage() {
   const [users, setUsers] = useState<User[]>(mockUsers);
@@ -71,6 +72,30 @@ export default function UserManagementPage() {
     </DropdownMenu>
   );
 
+  const RoleDisplay = ({ user }: { user: User }) => (
+    <div className="flex items-center gap-2">
+      {user.roles.isAdmin ? <Shield className="h-5 w-5 text-destructive" /> : <UserIcon className="h-5 w-5 text-muted-foreground" />}
+      <span className="capitalize">{user.roles.isAdmin ? 'Admin' : 'User'}</span>
+    </div>
+  );
+
+  const StatusDisplay = ({ user }: { user: User }) => (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger>
+          <div className="flex items-center gap-2">
+            <span className={cn("h-3 w-3 rounded-full", user.status === 'active' ? 'bg-green-500' : 'bg-red-500')}></span>
+            <span className="capitalize md:hidden">{user.status}</span>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p className="capitalize">{user.status}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+
+
   return (
     <div className="space-y-6">
       <div>
@@ -96,14 +121,10 @@ export default function UserManagementPage() {
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">{user.name}</TableCell>
                   <TableCell>
-                    <Badge variant={user.roles.isAdmin ? 'destructive' : 'secondary'}>
-                      {user.roles.isAdmin ? 'Admin' : 'User'}
-                    </Badge>
+                    <RoleDisplay user={user} />
                   </TableCell>
                   <TableCell>
-                    <Badge variant={user.status === 'active' ? 'default' : 'outline'} className={cn(user.status === 'active' ? 'bg-green-500/20 text-green-700 border-green-400' : 'bg-red-500/20 text-red-700 border-red-400')}>
-                      {user.status}
-                    </Badge>
+                    <StatusDisplay user={user} />
                   </TableCell>
                   <TableCell>{user.phone}</TableCell>
                   <TableCell className="text-right">
@@ -132,15 +153,11 @@ export default function UserManagementPage() {
                   <CardContent className="space-y-4">
                       <div className="flex justify-between items-center">
                           <span className="text-sm font-medium">Role</span>
-                          <Badge variant={user.roles.isAdmin ? 'destructive' : 'secondary'}>
-                              {user.roles.isAdmin ? 'Admin' : 'User'}
-                          </Badge>
+                          <RoleDisplay user={user} />
                       </div>
                       <div className="flex justify-between items-center">
                           <span className="text-sm font-medium">Status</span>
-                          <Badge variant={user.status === 'active' ? 'default' : 'outline'} className={cn(user.status === 'active' ? 'bg-green-500/20 text-green-700 border-green-400' : 'bg-red-500/20 text-red-700 border-red-400')}>
-                              {user.status}
-                          </Badge>
+                          <StatusDisplay user={user} />
                       </div>
                   </CardContent>
               </Card>
