@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { Settings, User as UserIcon, LogOut, Shield } from 'lucide-react';
 import {
@@ -12,9 +14,22 @@ import {
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { mockUsers } from '@/lib/data';
+import { useEffect, useState } from 'react';
+import type { User } from '@/lib/types';
 
 export default function UserNav() {
-  const user = mockUsers.find(u => u.roles.isAdmin) || mockUsers[0];
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    // In a real app, you would fetch user data based on the session
+    // For now, we'll just use the first admin user from mock data
+    const adminUser = mockUsers.find(u => u.roles.isAdmin) || mockUsers[0];
+    setUser(adminUser);
+  }, []);
+
+  if (!user) {
+    return null; // Or a loading skeleton
+  }
 
   return (
     <DropdownMenu>
@@ -60,10 +75,10 @@ export default function UserNav() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/login">
+          <a href="/api/logout">
             <LogOut className="mr-2 h-4 w-4" />
             <span>Log out</span>
-          </Link>
+          </a>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

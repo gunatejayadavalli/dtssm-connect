@@ -1,4 +1,6 @@
-import Link from 'next/link';
+'use client';
+
+import { useRouter } from 'next/navigation';
 import { AtSign, Phone } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -11,8 +13,50 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import Link from 'next/link';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [phone, setPhone] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // In a real app, you might send the phone number
+        body: JSON.stringify({ phone }),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Login Successful",
+          description: "You are now logged in.",
+        });
+        router.push('/home');
+      } else {
+        throw new Error('Login failed');
+      }
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: 'Could not log in. Please try again.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md mx-auto">
@@ -26,12 +70,20 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="phone">Phone Number</Label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input id="phone" type="tel" placeholder="98765 43210" required className="pl-10" />
+                <Input 
+                  id="phone" 
+                  type="tel" 
+                  placeholder="98765 43210" 
+                  required 
+                  className="pl-10" 
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
               </div>
             </div>
             {/* The OTP field can be conditionally shown after OTP is sent */}
@@ -41,8 +93,8 @@ export default function LoginPage() {
               <Input id="otp" type="text" placeholder="Enter 6-digit OTP" />
             </div> 
             */}
-            <Button type="submit" className="w-full" asChild>
-                <Link href="/home">Send OTP</Link>
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? 'Sending OTP...' : 'Send OTP'}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">

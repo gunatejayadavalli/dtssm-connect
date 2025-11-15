@@ -79,7 +79,7 @@ export default function SettingsPage() {
         </CardHeader>
         <CardContent>
           <Button variant="destructive" asChild>
-            <Link href="/login">Log Out of Your Account</Link>
+            <a href="/api/logout">Log Out of Your Account</a>
           </Button>
         </CardContent>
       </Card>
