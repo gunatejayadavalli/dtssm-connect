@@ -14,10 +14,14 @@ const navItems: NavItem[] = [
   { href: '/members', label: 'Members', icon: Users },
   { href: '/biodata', label: 'Biodata', icon: BookUser },
   { href: '/events', label: 'Events', icon: Calendar },
-  { href: '/admin/users', label: 'User Management', icon: Shield, adminOnly: true },
 ];
 
-export default function DesktopSidebar({ isMobile = false }: { isMobile?: boolean }) {
+interface DesktopSidebarProps {
+  isMobile?: boolean;
+  onLinkClick?: () => void;
+}
+
+export default function DesktopSidebar({ isMobile = false, onLinkClick }: DesktopSidebarProps) {
   const pathname = usePathname();
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
 
@@ -33,7 +37,10 @@ export default function DesktopSidebar({ isMobile = false }: { isMobile?: boolea
     if (isMobile) {
         items = items.filter(item => item.href !== '/admin/users');
     }
-    return items.filter(item => !item.adminOnly || (item.adminOnly && loggedInUser?.roles.isAdmin));
+    if (loggedInUser?.roles.isAdmin && !isMobile) {
+        return [...items, { href: '/admin/users', label: 'User Management', icon: Shield, adminOnly: true }];
+    }
+    return items;
   }
 
   const visibleNavItems = getVisibleNavItems();
@@ -68,6 +75,7 @@ export default function DesktopSidebar({ isMobile = false }: { isMobile?: boolea
             <Link
               key={item.href}
               href={item.href}
+              onClick={onLinkClick}
               className={cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10',
                 isActive && 'bg-primary/10 text-primary font-medium'
