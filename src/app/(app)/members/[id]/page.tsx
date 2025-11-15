@@ -1,5 +1,6 @@
-import { notFound } from 'next/navigation';
-import Image from 'next/image';
+'use client';
+
+import { notFound, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   User,
@@ -42,6 +43,9 @@ const DetailItem = ({ icon: Icon, label, value, isPrivate = false }: { icon: Rea
 };
 
 export default function MemberDetailPage({ params }: { params: { id: string } }) {
+  const searchParams = useSearchParams();
+  const from = searchParams.get('from');
+
   const user = getMemberById(params.id);
 
   if (!user) {
@@ -51,11 +55,13 @@ export default function MemberDetailPage({ params }: { params: { id: string } })
   const isPhonePrivate = user.visibility?.phone !== 'public';
   const registeredByMember = user.registeredBy ? getMemberById(user.registeredBy) : null;
   const wasAddedBySelf = !registeredByMember || registeredByMember.id === user.id;
+  
+  const backLink = from === 'user-management' ? { href: '/admin/users', text: 'Back to User Management' } : { href: '/members', text: 'Back to Directory' };
 
   return (
     <div className="space-y-6">
         <Button variant="ghost" asChild>
-            <Link href="/members"><ChevronLeft className="mr-2 h-4 w-4" />Back to Directory</Link>
+            <Link href={backLink.href}><ChevronLeft className="mr-2 h-4 w-4" />{backLink.text}</Link>
         </Button>
 
       <Card>

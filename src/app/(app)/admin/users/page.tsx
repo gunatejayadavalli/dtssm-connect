@@ -46,7 +46,7 @@ export default function UserManagementPage() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
             <DropdownMenuItem asChild>
-              <Link href={`/members/${user.id}`}>
+              <Link href={`/members/${user.id}?from=user-management`}>
                 <Eye className="mr-2 h-4 w-4" />
                 View Member Details
               </Link>
