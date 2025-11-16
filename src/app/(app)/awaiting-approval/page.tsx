@@ -33,12 +33,12 @@ export default function AwaitingApprovalPage() {
         )
     }
 
-    if (session?.user?.isApproved) {
-        redirect('/home');
-    }
-
     if (!session) {
         redirect('/login');
+    }
+
+    if (session?.user?.isApproved) {
+        redirect('/home');
     }
     
     return (

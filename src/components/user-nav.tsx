@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -13,22 +14,19 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { mockUsers } from '@/lib/data';
-import { useEffect, useState } from 'react';
-import type { User } from '@/lib/types';
+import { useSession } from '@/lib/session';
+import { Skeleton } from './ui/skeleton';
 
 export default function UserNav() {
-  const [user, setUser] = useState<User | null>(null);
+  const { session, isLoading } = useSession();
+  const user = session?.user;
 
-  useEffect(() => {
-    // In a real app, you would fetch user data based on the session
-    // For now, we'll just use the first admin user from mock data
-    const adminUser = mockUsers.find(u => u.roles.isAdmin) || mockUsers[0];
-    setUser(adminUser);
-  }, []);
+  if (isLoading) {
+    return <Skeleton className="h-9 w-9 rounded-full" />;
+  }
 
   if (!user) {
-    return null; // Or a loading skeleton
+    return null;
   }
 
   return (
@@ -36,8 +34,8 @@ export default function UserNav() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-9 w-9 rounded-full">
           <Avatar className="h-9 w-9">
-            <AvatarImage src={user.profilePhotoUrl} alt={user.name} data-ai-hint="profile avatar" />
-            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+            <AvatarImage src={(user as any).profilePhotoUrl} alt={user.name || ''} data-ai-hint="profile avatar" />
+            <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -58,7 +56,7 @@ export default function UserNav() {
                 <span>My Profile</span>
             </Link>
           </DropdownMenuItem>
-          {user.roles.isAdmin && (
+          {(user as any).roles?.isAdmin && (
             <DropdownMenuItem asChild>
                 <Link href="/admin/users">
                     <Shield className="mr-2 h-4 w-4" />

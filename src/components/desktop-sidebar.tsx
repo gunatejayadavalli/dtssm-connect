@@ -1,13 +1,14 @@
+
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AtSign, LayoutGrid, Users, BookUser, Calendar, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { NavItem, User } from '@/lib/types';
-import { mockUsers } from '@/lib/data';
-import { useEffect, useState } from 'react';
+import type { NavItem } from '@/lib/types';
+import { useSession } from '@/lib/session';
 import { SheetHeader, SheetTitle } from './ui/sheet';
+import { Skeleton } from './ui/skeleton';
 
 const navItems: NavItem[] = [
   { href: '/home', label: 'Home', icon: LayoutGrid },
@@ -23,13 +24,28 @@ interface DesktopSidebarProps {
 
 export default function DesktopSidebar({ isMobile = false, onLinkClick }: DesktopSidebarProps) {
   const pathname = usePathname();
-  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+  const { session, isLoading } = useSession();
 
-  useEffect(() => {
-    // In a real app, you'd get this from an auth context
-    const user = mockUsers.find(u => u.roles.isAdmin) || mockUsers[0];
-    setLoggedInUser(user);
-  }, []);
+  if (isLoading) {
+    return (
+       <div
+        className={cn(
+          'h-full bg-card text-card-foreground',
+          isMobile ? 'flex flex-col' : 'hidden md:flex md:flex-col md:fixed md:w-64 border-r'
+        )}
+      >
+        <div className={cn("flex h-16 items-center px-6", isMobile ? "p-4 border-b" : "border-b px-6")}>
+          <Skeleton className="h-6 w-32" />
+        </div>
+        <div className="flex-1 space-y-2 p-4">
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+        </div>
+      </div>
+    );
+  }
 
   const getVisibleNavItems = () => {
     return navItems;
