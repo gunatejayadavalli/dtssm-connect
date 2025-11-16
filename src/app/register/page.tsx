@@ -119,14 +119,39 @@ export default function RegisterPage() {
     }
   };
 
-  function onSubmit(values: FormSchemaType) {
+  async function onSubmit(values: FormSchemaType) {
     console.log(values);
-    toast({
-        title: "Registration Submitted",
-        description: "Your profile has been submitted for admin approval.",
-    });
-    // On success, redirect to awaiting approval
-    router.push('/awaiting-approval');
+    // This is a simplified flow. In a real app, you'd register the user,
+    // then log them in to establish a session, then redirect.
+    try {
+      // Step 1: Register user (mocked here, in real app this would be an API call)
+      
+      // Step 2: Log the user in to create a session
+      const loginResponse = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: values.phone, isNewUser: true }),
+      });
+
+      if (!loginResponse.ok) {
+        throw new Error('Failed to create session for new user.');
+      }
+
+      toast({
+          title: "Registration Submitted",
+          description: "Your profile has been submitted for admin approval.",
+      });
+
+      // Step 3: Redirect to the awaiting approval page
+      window.location.href = '/awaiting-approval';
+      
+    } catch(error) {
+       toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: 'Could not complete registration. Please try again.',
+      });
+    }
   }
   
   return (

@@ -8,7 +8,6 @@ export function middleware(request: NextRequest) {
   const isPublicPage = [
     '/login',
     '/register',
-    '/awaiting-approval'
   ].includes(pathname);
 
   // Allow requests for API routes and special Next.js paths to pass through

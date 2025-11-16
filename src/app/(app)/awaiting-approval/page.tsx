@@ -5,10 +5,42 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { mockUsers } from '@/lib/data';
+import { useSession } from '@/lib/session';
+import { redirect } from 'next/navigation';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AwaitingApprovalPage() {
+    const { session, isLoading } = useSession();
     const admins = mockUsers.filter(user => user.roles.isAdmin);
 
+    if (isLoading) {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-background p-4">
+                 <Card className="w-full max-w-lg text-center shadow-lg">
+                    <CardHeader>
+                        <Skeleton className="h-8 w-3/4 mx-auto" />
+                        <Skeleton className="h-4 w-full mt-2 mx-auto" />
+                    </CardHeader>
+                    <CardContent>
+                        <Skeleton className="h-4 w-5/6 mx-auto" />
+                    </CardContent>
+                    <CardFooter className="flex justify-center gap-2">
+                        <Skeleton className="h-10 w-24" />
+                        <Skeleton className="h-10 w-24" />
+                    </CardFooter>
+                 </Card>
+            </div>
+        )
+    }
+
+    if (session?.user?.isApproved) {
+        redirect('/home');
+    }
+
+    if (!session) {
+        redirect('/login');
+    }
+    
     return (
         <div className="flex min-h-screen items-center justify-center bg-background p-4">
             <Card className="w-full max-w-lg text-center shadow-lg">
@@ -25,7 +57,7 @@ export default function AwaitingApprovalPage() {
                 </CardContent>
                 <CardFooter className="flex flex-col sm:flex-row justify-center gap-2">
                     <Button asChild>
-                        <Link href="/login">Back to Login</Link>
+                        <a href="/api/logout">Logout</a>
                     </Button>
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
