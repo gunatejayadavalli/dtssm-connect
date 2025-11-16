@@ -32,15 +32,7 @@ export default function DesktopSidebar({ isMobile = false, onLinkClick }: Deskto
   }, []);
 
   const getVisibleNavItems = () => {
-    let items = navItems;
-    // On mobile, the admin link is in the user nav, not here.
-    if (isMobile) {
-        items = items.filter(item => item.href !== '/admin/users');
-    }
-    if (loggedInUser?.roles.isAdmin && !isMobile) {
-        return [...items, { href: '/admin/users', label: 'User Management', icon: Shield, adminOnly: true }];
-    }
-    return items;
+    return navItems;
   }
 
   const visibleNavItems = getVisibleNavItems();
